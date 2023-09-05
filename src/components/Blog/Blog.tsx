@@ -13,8 +13,8 @@ import FactoryProvider from "../ComponentRegistry/FactoryProvider";
 import FactoryComponents from "../ComponentRegistry/FactoryComponents";
 import { ComponentRegistryProps } from "../ComponentRegistry/FactoryComponent";
 import { loadTextComponent } from "./TextComponentRegistry";
-import { loadProductComponent } from "./ProductComponent";
-import { loadTitleComponent } from "./TitleRegistry";
+import { loadProductComponent } from "./ProductComponentRegistry";
+import { loadTitleComponent } from "./TitleComponentRegistry";
 
 // Backend to retrieve the data here
 
