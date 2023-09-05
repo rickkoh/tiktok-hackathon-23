@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { Ref, forwardRef, useImperativeHandle, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import ProductComponent from "../ComponentRegistry/ProductComponent";
 
@@ -11,10 +11,22 @@ import ProductComponent from "../ComponentRegistry/ProductComponent";
  * 2. Able to xxpand fully when the widget is dragged up
  */
 
-export default function Blog() {
+interface Props {}
+
+export interface BlogRef {
+  open: () => void;
+}
+
+function Blog(props: Props, ref: Ref<BlogRef>) {
   const [showModal, setShowModal] = useState(true);
 
   const [fullscreenModal, setFullscreenModal] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    open: () => {
+      setShowModal(true);
+    },
+  }));
 
   return (
     <div
@@ -94,3 +106,5 @@ export default function Blog() {
     </div>
   );
 }
+
+export default forwardRef(Blog);
