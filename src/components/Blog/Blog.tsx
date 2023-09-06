@@ -1,7 +1,20 @@
 "use client";
-import { Ref, forwardRef, useImperativeHandle, useState } from "react";
+import {
+  Ref,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useReducer,
+  useState,
+} from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import ProductComponent from "../ComponentRegistry/ProductComponent";
+import { ComponentRegistry } from "@/types";
+import FactoryProvider from "../ComponentRegistry/FactoryProvider";
+import FactoryComponents from "../ComponentRegistry/FactoryComponents";
+import { ComponentRegistryProps } from "../ComponentRegistry/FactoryComponent";
+import { loadTextComponent } from "./TextComponentRegistry";
+import { loadProductComponent } from "./ProductComponentRegistry";
+import { loadTitleComponent } from "./TitleComponentRegistry";
 
 // Backend to retrieve the data here
 
@@ -11,6 +24,95 @@ import ProductComponent from "../ComponentRegistry/ProductComponent";
  * 2. Able to xxpand fully when the widget is dragged up
  */
 
+// database
+
+// fake data here for now
+// make changes to the fake data to see how componentregistry works
+// data here will eventually be fetched from live database
+
+const fakeComponents: ComponentRegistry[] = [
+  {
+    type: "Title",
+    props: {
+      text: "1. Best Overall",
+    },
+  },
+  {
+    type: "Product",
+    props: {
+      title: "Title",
+      description: "Proin vehicula dui at odio commodo uix phoinex.",
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
+    },
+  },
+  {
+    type: "Title",
+    props: {
+      text: "2. Most Useful",
+    },
+  },
+  {
+    type: "Product",
+    props: {
+      title: "Title",
+      description: "Proin vehicula dui at odio commodo uix phoinex.",
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
+    },
+  },
+];
+
+function registryReducer(
+  state: ComponentRegistryProps[],
+  action: any
+): ComponentRegistryProps[] {
+  switch (action.type) {
+    case "add":
+      return [...state, { ...action.payload }];
+    case "addAll":
+      return [
+        ...state,
+        ...action.payload.map((e: ComponentRegistryProps) => ({
+          type: e.type,
+          props: e.props,
+        })),
+      ];
+    case "update":
+      return state.map((e, i) =>
+        i === action.payload.id
+          ? { type: action.payload.type, props: action.payload.props }
+          : e
+      );
+    case "delete":
+      return state.filter((e, i) => i !== action.payload.id);
+    case "set":
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 interface Props {}
 
 export interface BlogRef {
@@ -18,6 +120,7 @@ export interface BlogRef {
 }
 
 function Blog(props: Props, ref: Ref<BlogRef>) {
+  // Component state
   const [showModal, setShowModal] = useState(true);
 
   const [fullscreenModal, setFullscreenModal] = useState(false);
@@ -27,6 +130,19 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
       setShowModal(true);
     },
   }));
+
+  // Registry state
+  const [state, dispatch] = useReducer(registryReducer, []);
+
+  useEffect(() => {
+    loadTextComponent();
+    loadTitleComponent();
+    loadProductComponent();
+    dispatch({
+      type: "addAll",
+      payload: fakeComponents,
+    });
+  }, []);
 
   return (
     <div
@@ -61,6 +177,9 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
         </div>
       </section>
       <section className="p-6 pt-0 py-3 flex flex-col gap-2">
+        {
+          // Eventually will need to retrieve data from database
+        }
         <h1 className="text-4xl">Top 5 product to buy this Christmas</h1>
         <p className="text-gray-700">
           Description lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -68,32 +187,13 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
           scelerisque
         </p>
         <p>2 mins read • written by User</p>
-        <p>Product Components</p>
-        <h1 className="text-2xl font-bold my-1">1. Best Overall</h1>
-        <ProductComponent />
-        <p>
-          Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis
-          scelerisque
-        </p>
-        <p>
-          Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis
-          scelerisque
-        </p>
-        <h1 className="text-2xl font-bold my-1">2. Most Useful</h1>
-        <ProductComponent />
-        <p>
-          Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis
-          scelerisque
-        </p>
-        <p>
-          Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis
-          scelerisque
-        </p>
+        <FactoryProvider state={state} dispatch={dispatch}>
+          <FactoryComponents />
+        </FactoryProvider>
         <section id="comment-section" className="flex flex-col gap-4">
+          {
+            // Eventually will need to retrieve data from database
+          }
           <h1 className="text-2xl font-bold my-1 mt-4">Comments</h1>
           <p>Comment 1</p>
           <p>Comment 2</p>
