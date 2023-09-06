@@ -22,12 +22,6 @@ const ImageComponent = (props: Props) => {
   );
 };
 
-function areEqual(prevProps: any, nextProps: any) {
-  return prevProps.constructor.name === nextProps.constructor.name;
-}
-
-const MemoizedImageComponent = memo(ImageComponent, areEqual);
-
 export const loadImageComponent = () => {
-  registerComponent("Image", MemoizedImageComponent);
+  registerComponent("Image", ImageComponent);
 };

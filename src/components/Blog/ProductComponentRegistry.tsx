@@ -33,14 +33,7 @@ function ProductComponent(props: Props) {
     </div>
   );
 }
-// Proin vehicula dui at odio commodo uix phoinex.
-
-function areEqual(prevProps: any, nextProps: any) {
-  return prevProps.constructor.name === nextProps.constructor.name;
-}
-
-const MemoizedProductComponent = memo(ProductComponent, areEqual);
 
 export const loadProductComponent = () => {
-  registerComponent("Product", MemoizedProductComponent);
+  registerComponent("Product", ProductComponent);
 };
