@@ -33,6 +33,12 @@ export function registerComponent<T>(key: string, component: ComponentType<T>) {
 }
 
 // Registry Component
-export function ComponentRegistry<T extends ComponentRegistryProps>(props: T): JSX.Element {
-  return createElement(getComponent(props.type), props.props, props.children?.map(ComponentRegistry));
+export function ComponentRegistry<T extends ComponentRegistryProps>(
+  props: T
+): JSX.Element {
+  return createElement(
+    getComponent(props.type),
+    props.props,
+    props.children?.map(ComponentRegistry)
+  );
 }
