@@ -6,15 +6,9 @@ interface Props {
 }
 
 const TextComponent = (props: Props) => {
-  return <p>{props.text}</p>;
+  return <p className="text-sm">{props.text}</p>;
 };
 
-function areEqual(prevProps: any, nextProps: any) {
-  return prevProps.constructor.name === nextProps.constructor.name;
-}
-
-const MemoizedTextComponent = memo(TextComponent, areEqual);
-
 export const loadTextComponent = () => {
-  registerComponent("Text", MemoizedTextComponent);
+  registerComponent("Text", TextComponent);
 };

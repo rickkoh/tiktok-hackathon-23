@@ -1,4 +1,4 @@
-import { createElement, ComponentType } from "react";
+import { createElement, ComponentType, memo } from "react";
 
 export interface ComponentRegistryProps {
   type: string;
@@ -24,11 +24,25 @@ function getComponent<T>(key: string): ComponentType<T> {
 }
 
 // Register a component in the registry
+// export function registerComponent<T>(key: string, component: ComponentType<T>) {
+// components[key] = component;
+// }
+
+// Register a component in the registry
 export function registerComponent<T>(key: string, component: ComponentType<T>) {
-  components[key] = component;
+  const MemoizedComponent = memo(component, (prevProps, nextProps) => {
+    return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+  });
+  components[key] = MemoizedComponent;
 }
 
 // Registry Component
-export function FactoryComponent<T extends ComponentRegistryProps>(props: T): JSX.Element {
-  return createElement(getComponent(props.type), props.props, props.children?.map(FactoryComponent));
+export function FactoryComponent<T extends ComponentRegistryProps>(
+  props: T
+): JSX.Element {
+  return createElement(
+    getComponent(props.type),
+    props.props,
+    props.children?.map(FactoryComponent)
+  );
 }

@@ -6,15 +6,9 @@ interface Props {
 }
 
 const TitleComponent = (props: Props) => {
-  return <h1 className="text-2xl font-bold my-1">{props.text}</h1>;
+  return <h1 className="text-md font-bold my-1">{props.text}</h1>;
 };
 
-function areEqual(prevProps: any, nextProps: any) {
-  return prevProps.constructor.name === nextProps.constructor.name;
-}
-
-const MemoizedTitleComponent = memo(TitleComponent, areEqual);
-
 export const loadTitleComponent = () => {
-  registerComponent("Title", MemoizedTitleComponent);
+  registerComponent("Title", TitleComponent);
 };
