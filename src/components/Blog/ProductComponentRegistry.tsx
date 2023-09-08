@@ -1,6 +1,5 @@
-import { memo } from "react";
-import { registerComponent } from "../ComponentRegistry/FactoryComponent";
 import Image from "next/image";
+import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
 
 interface Props {
   title: string;

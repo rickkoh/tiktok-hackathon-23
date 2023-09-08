@@ -2,22 +2,25 @@
 import {
   Ref,
   forwardRef,
+  useContext,
   useEffect,
   useImperativeHandle,
   useReducer,
   useState,
 } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { ComponentRegistry } from "@/types";
-import FactoryProvider from "../ComponentRegistry/FactoryProvider";
-import FactoryComponents from "../ComponentRegistry/FactoryComponents";
-import { ComponentRegistryProps } from "../ComponentRegistry/FactoryComponent";
 import { loadTextComponent } from "./TextComponentRegistry";
 import { loadProductComponent } from "./ProductComponentRegistry";
 import { loadTitleComponent } from "./TitleComponentRegistry";
 import Image from "next/image";
 import { loadImageComponent } from "./ImageComponentRegistry";
 import { BsShare, BsChat, BsBookmark, BsHeart } from "react-icons/bs";
+import {
+  ComponentRegistry,
+  FactoryComponentContext,
+  FactoryComponents,
+  FactoryComponentProvider,
+} from "../ComponentFactory.tsx/ComponentFactory";
 
 // Backend to retrieve the data here
 
@@ -113,36 +116,6 @@ const fakeComponents: ComponentRegistry[] = [
   },
 ];
 
-function registryReducer(
-  state: ComponentRegistryProps[],
-  action: any
-): ComponentRegistryProps[] {
-  switch (action.type) {
-    case "add":
-      return [...state, { ...action.payload }];
-    case "addAll":
-      return [
-        ...state,
-        ...action.payload.map((e: ComponentRegistryProps) => ({
-          type: e.type,
-          props: e.props,
-        })),
-      ];
-    case "update":
-      return state.map((e, i) =>
-        i === action.payload.id
-          ? { type: action.payload.type, props: action.payload.props }
-          : e
-      );
-    case "delete":
-      return state.filter((e, i) => i !== action.payload.id);
-    case "set":
-      return action.payload;
-    default:
-      return state;
-  }
-}
-
 interface Props {}
 
 export interface BlogRef {
@@ -160,20 +133,6 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
       setShowModal(true);
     },
   }));
-
-  // Registry state
-  const [state, dispatch] = useReducer(registryReducer, []);
-
-  useEffect(() => {
-    loadTextComponent();
-    loadTitleComponent();
-    loadProductComponent();
-    loadImageComponent();
-    dispatch({
-      type: "addAll",
-      payload: fakeComponents,
-    });
-  }, []);
 
   return (
     <>
@@ -243,9 +202,9 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
               <div className="text-gray-400">Sep 5, 2023</div>
             </div>
           </div>
-          <FactoryProvider state={state} dispatch={dispatch}>
-            <FactoryComponents />
-          </FactoryProvider>
+          <FactoryComponentProvider>
+            <BlogFactoryComponents />
+          </FactoryComponentProvider>
           <section id="comment-section" className="flex flex-col gap-4">
             {
               // Eventually will need to retrieve data from database
@@ -262,6 +221,19 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
       </div>
     </>
   );
+}
+
+function BlogFactoryComponents() {
+  const { addAllComponents } = useContext(FactoryComponentContext);
+
+  useEffect(() => {
+    loadTextComponent();
+    loadTitleComponent();
+    loadProductComponent();
+    loadImageComponent();
+    addAllComponents(fakeComponents);
+  }, []);
+  return <FactoryComponents />;
 }
 
 export default forwardRef(Blog);
