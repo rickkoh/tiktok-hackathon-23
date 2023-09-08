@@ -1,5 +1,4 @@
-import { memo } from "react";
-import { registerComponent } from "../ComponentRegistry/FactoryComponent";
+import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
 
 interface Props {
   text: string;
