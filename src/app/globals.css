@@ -7,3 +7,8 @@
   padding: 0;
   margin: 0;
 }
+
+/* Exclude tailwind styling for markdown components */
+.markdown > * {
+  all: revert;
+}
