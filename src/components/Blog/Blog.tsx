@@ -162,7 +162,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
       {showModal && (
         <section
           id="toolbar"
-          className="fixed flex flex-row justify-between items-center px-16 py-4 bottom-0 left-0 h-fit w-full bg-white z-50"
+          className="fixed flex flex-row justify-between items-center px-16 py-4 pb-8 bottom-0 left-0 h-fit w-full bg-white z-50"
         >
           <BsShare className="w-6 h-6" />
           <BsBookmark className="w-6 h-6" />
