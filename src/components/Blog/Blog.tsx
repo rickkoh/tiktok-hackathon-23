@@ -6,6 +6,7 @@ import {
   useEffect,
   useImperativeHandle,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -123,10 +124,19 @@ export interface BlogRef {
 }
 
 function Blog(props: Props, ref: Ref<BlogRef>) {
-  // Component state
   const [showModal, setShowModal] = useState(true);
 
   const [fullscreenModal, setFullscreenModal] = useState(false);
+
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  function handleScroll(e: any) {
+    if (e.target.scrollTop >= 50) {
+      setFullscreenModal(true);
+    } else {
+      setFullscreenModal(false);
+    }
+  }
 
   useImperativeHandle(ref, () => ({
     open: () => {
@@ -148,6 +158,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
         </section>
       )}
       <div
+        ref={mainRef}
         className={`fixed transition-all duration-500 w-full h-[100dvh] rounded-t-xl shadow-xl flex flex-col gap-4 bg-background overflow-scroll top-0
     ${
       showModal
@@ -157,6 +168,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
         : "translate-y-full"
     }
     `}
+        onScroll={handleScroll}
       >
         <section id="nav" className="sticky top-0 left-0">
           <div className="w-full h-12 p-3 flex flex-row justify-end bg-white items-center">
@@ -172,6 +184,10 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
               className="absolute right-5"
               onClick={() => {
                 setShowModal(false);
+                setFullscreenModal(false);
+                if (mainRef.current) {
+                  mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+                }
               }}
             >
               <AiOutlineClose className="w-6 h-6 transition-all duration-300 hover:text-red-500" />
