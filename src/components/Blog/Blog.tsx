@@ -124,7 +124,7 @@ export interface BlogRef {
 }
 
 function Blog(props: Props, ref: Ref<BlogRef>) {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const [fullscreenModal, setFullscreenModal] = useState(false);
 
@@ -133,13 +133,26 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
   function handleScroll(e: any) {
     if (e.target.scrollTop >= 50) {
       setFullscreenModal(true);
+    } else if (e.target.scrollTop <= -50) {
+      handleClose();
     } else {
       setFullscreenModal(false);
     }
   }
 
+  function handleClose() {
+    setShowModal(false);
+    setFullscreenModal(false);
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     open: () => {
+      if (mainRef.current) {
+        mainRef.current.scrollTo({ top: 0, behavior: "instant" });
+      }
       setShowModal(true);
     },
   }));
@@ -180,24 +193,12 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
             >
               <div className="w-32 h-1 rounded-full transition-all duration-300 bg-gray-200 hover:bg-gray-600" />
             </button>
-            <button
-              className="absolute right-5"
-              onClick={() => {
-                setShowModal(false);
-                setFullscreenModal(false);
-                if (mainRef.current) {
-                  mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
-                }
-              }}
-            >
+            <button className="absolute right-5" onClick={handleClose}>
               <AiOutlineClose className="w-6 h-6 transition-all duration-300 hover:text-red-500" />
             </button>
           </div>
         </section>
         <section className="p-6 pt-0 py-3 flex flex-col gap-3">
-          {
-            // Eventually will need to retrieve data from database
-          }
           <h1 className="text-2xl font-bold">Top 3 Rubber Duckies</h1>
           <div className="flex flex-row gap-3 items-center">
             <Image
