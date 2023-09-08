@@ -171,6 +171,7 @@ function componentReducer(
           ? {
               ...e,
               props: {
+                ...e.props,
                 ...action.payload.component.props,
               },
             }
