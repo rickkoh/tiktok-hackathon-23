@@ -174,7 +174,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
               handleClose();
             }}
           />
-          <section
+          <nav
             id="toolbar"
             className="fixed flex flex-row justify-between items-center px-16 py-4 pb-8 bottom-0 left-0 h-fit w-full bg-white z-50"
           >
@@ -182,18 +182,18 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
             <BsBookmark className="w-6 h-6" />
             <BsChat className="w-6 h-6" />
             <BsHeart className="w-6 h-6" />
-          </section>
+          </nav>
         </>
       )}
       <div
         ref={mainRef}
-        className={`fixed transition-all duration-500 w-full h-[100dvh] rounded-t-xl shadow-xl flex flex-col gap-4 bg-background overflow-scroll top-0 z-10 overscroll-none
+        className={`fixed transition-all duration-500 w-full h-[100dvh] rounded-t-xl shadow-xl flex flex-col gap-4 bg-background overflow-scroll top-0 z-10 overscroll-y-contain overscroll-x-none
     ${
       showModal
         ? fullscreenModal
-          ? "rounded-none translate-y-0"
-          : "translate-y-1/4 rounded-t-xl"
-        : "translate-y-full"
+          ? " rounded-none translate-y-0 "
+          : " translate-y-1/4 rounded-t-xl "
+        : " translate-y-full "
     }
     `}
         onScroll={handleScroll}
