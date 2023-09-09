@@ -172,7 +172,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
       )}
       <div
         ref={mainRef}
-        className={`fixed transition-all duration-500 w-full h-[100dvh] rounded-t-xl shadow-xl flex flex-col gap-4 bg-background overflow-scroll top-0
+        className={`fixed transition-all duration-500 w-full h-[100dvh] rounded-t-xl shadow-xl flex flex-col gap-4 bg-background overflow-scroll top-0 overscroll-none
     ${
       showModal
         ? fullscreenModal
