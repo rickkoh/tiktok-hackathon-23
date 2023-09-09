@@ -5,6 +5,7 @@ import {
   registerComponent,
   useRegistryState,
 } from "../ComponentFactory.tsx/ComponentFactory";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 interface Props {
   id?: number;
@@ -98,7 +99,7 @@ export default function TextEditor(props: Props) {
         </div>
       ) : (
         <div className="flex flex-row w-full justify-between items-center gap-2">
-          <p className="text-sm">{text}</p>
+          <ReactMarkdown className="markdown text-sm">{text}</ReactMarkdown>
           <button
             onClick={() => {
               setEditing(true);
