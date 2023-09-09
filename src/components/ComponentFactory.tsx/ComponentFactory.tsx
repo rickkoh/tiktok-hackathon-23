@@ -16,6 +16,7 @@ import {
 // Define a counter to generate unique IDs
 let counter = 0;
 function nextId() {
+  console.log("counter, ", counter);
   counter += 1;
   return counter;
 }
@@ -206,7 +207,7 @@ function componentReducer(
 }
 
 export function useRegistryState(props: Record<string, any>) {
-  function registryState<T>(
+  function RegistryState<T>(
     key: string,
     initialValue?: T
   ): [T, (value: T) => void] {
@@ -220,17 +221,18 @@ export function useRegistryState(props: Record<string, any>) {
       return state;
     }, [state]);
 
-    const setStateHook = useCallback((value: T) => {
-      if (updateComponent !== undefined) {
+    const setStateHook = useCallback(
+      (value: T) => {
         updateComponent(props.id, {
           props: {
             [key]: value,
           },
         });
-      }
 
-      setState(value);
-    }, []);
+        setState(value);
+      },
+      [key]
+    );
 
     useEffect(() => {
       initialValue && setStateHook(initialValue);
@@ -238,5 +240,5 @@ export function useRegistryState(props: Record<string, any>) {
 
     return [stateMemo, setStateHook];
   }
-  return registryState;
+  return RegistryState;
 }
