@@ -1,31 +1,24 @@
 "use client";
-import Blog, { BlogRef } from "@/components/Blog/Blog";
-import ExampleComponent from "@/components/ExampleComponent";
 import BottomNavbar from "@/components/Navbar/BottomNavbar";
 import TopNavbar from "@/components/Navbar/TopNavbar";
 import Reel from "@/components/Reel/Reel";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import useScrollSnap from "react-use-scroll-snap";
 
 export default function Home() {
-  const blogRef = useRef<BlogRef>(null);
+  const scrollRef = useRef(null);
+  useScrollSnap({ ref: scrollRef, duration: 5 });
 
   return (
     <main className="flex flex-col">
       {/* Header */}
       <TopNavbar />
-      <Reel />
+      <div ref={scrollRef}>
+        <Reel color="bg-blue-400" />
+        <Reel color="bg-red-400" />
+      </div>
+      <div className="h-[72px]"></div>
       <BottomNavbar />
-      {/* <button
-        className="border w-fit h-fit border-black px-3 py-1 bg-blue-300"
-        onClick={() => {
-          if (blogRef.current) {
-            blogRef.current.open();
-          }
-        }}
-      >
-        Open widget
-      </button> */}
-      {/* <Blog ref={blogRef} /> */}
     </main>
   );
 }

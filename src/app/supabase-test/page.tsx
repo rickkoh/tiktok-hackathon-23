@@ -2,7 +2,6 @@
 import Blog, { BlogRef } from "@/components/Blog/Blog";
 import ExampleComponent from "@/components/ExampleComponent";
 import { Database, Tables } from "@/types";
-import { blogData1 } from "@/utils/dummyData";
 import { astToMarkDown, markDownToAst } from "@/utils/helper";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useCallback, useEffect, useRef, useState } from "react";

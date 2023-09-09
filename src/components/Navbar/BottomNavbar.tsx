@@ -37,11 +37,11 @@ function BottomNavbar() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 items-center flex justify-around bg-primary pt-1.5 pb-5 text-secondary">
-      {navItems.map((item) => {
+      {navItems.map((item, i) => {
         const isActive: boolean = pathname.startsWith(item.path);
 
         return (
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center" key={i}>
             <Image
               src={(isActive ? item.icon + "_sel" : item.icon) + ".png"}
               alt={"Live Icon"}

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 function TopNavbar() {
   return (
-    <header className="flex w-full justify-around items-center align-middle fixed text-secondary text-bold text-base my-10">
+    <header className="fixed z-10 flex w-full justify-around items-center align-middle text-secondary text-bold text-base my-10">
       <Image src="/live_icon.png" alt={"Live Icon"} width={25} height={5} />
       <p>Singapore</p>
       <p>Following</p>
