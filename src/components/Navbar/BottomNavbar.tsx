@@ -1,9 +1,10 @@
+"use client";
 import Image from "next/image";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function BottomNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems: { name: string; icon: string; path: string }[] = [
     {
@@ -36,28 +37,14 @@ function BottomNavbar() {
   //   TODO navigate function
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 items-center flex justify-around bg-primary pt-1.5 pb-5 text-secondary">
-      {navItems.map((item, i) => {
-        const isActive: boolean = pathname.startsWith(item.path);
-
-        return (
-          <div className="flex flex-col justify-center items-center" key={i}>
-            <Image
-              src={(isActive ? item.icon + "_sel" : item.icon) + ".png"}
-              alt={"Live Icon"}
-              width={item.name == "Shop" ? 23 : 30}
-              height={10}
-            />
-            <small
-              className={
-                item.name == "Shop" ? "text-xs relative top-1" : "text-xs"
-              }
-            >
-              {item.name}
-            </small>
-          </div>
-        );
-      })}
+    <nav className="flex flex-row w-full h-20 fixed bottom-0 justify-evenly items-center bg-primary pt-1.5 pb-5 text-secondary">
+      <Image src="/home_icon.png" alt="" width={30} height={30} />
+      <Image src="/shop_icon.png" alt="" width={30} height={30} />
+      <button onClick={() => router.push("/add-reel")}>
+        <Image src="/create_button.png" alt="" width={30} height={30} />
+      </button>
+      <Image src="/inbox_icon.png" alt="" width={30} height={30} />
+      <Image src="/profile_icon.png" alt="" width={30} height={30} />
     </nav>
   );
 }
