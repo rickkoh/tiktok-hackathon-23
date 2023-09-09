@@ -4,6 +4,7 @@ import ExampleComponent from "@/components/ExampleComponent";
 import { Database, Tables } from "@/types";
 import { astToMarkDown, markDownToAst } from "@/utils/helper";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Head from "next/head";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Root } from "remark-parse/lib";
@@ -46,6 +47,14 @@ export default function SupabaseTest() {
 
   return (
     <main className="flex flex-col w-full bg-secondary">
+      <Head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="TikBlog" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+      </Head>
       <h1>Test Page</h1>
       <p>Test Database Connection with Reels Table</p>
       {data.map((reel, i) => (

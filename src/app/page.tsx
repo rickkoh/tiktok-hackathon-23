@@ -4,6 +4,7 @@ import TopNavbar from "@/components/Navbar/TopNavbar";
 import Reel from "@/components/Reel/Reel";
 import { Database, ReelType, Tables } from "@/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Head from "next/head";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useScrollSnap from "react-use-scroll-snap";
 
@@ -48,6 +49,14 @@ export default function Home() {
 
   return (
     <main className="flex flex-col">
+      <Head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="TikBlog" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+      </Head>
       {/* Header */}
       <TopNavbar />
       <div ref={scrollRef}>

@@ -9,17 +9,11 @@ import {
   FactoryComponentProvider,
 } from "@/components/ComponentFactory.tsx/ComponentFactory";
 import BlogProfile from "@/components/Profile/BlogProfile";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import {
-  Ref,
-  forwardRef,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineLink, AiOutlinePlus } from "react-icons/ai";
 import { PiImageLight, PiTextTLight } from "react-icons/pi";
 
@@ -65,6 +59,14 @@ function NewPageFactoryComponents() {
 
   return (
     <main className="w-full h-[100dvh] flex flex-col">
+      <Head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="TikBlog" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+      </Head>
       <section
         id="nav"
         className="flex flex-row w-full h-12 px-2 bg-white justify-between items-center"

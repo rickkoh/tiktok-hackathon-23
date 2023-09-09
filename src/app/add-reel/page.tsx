@@ -7,12 +7,21 @@ import { HiDownload } from "react-icons/hi";
 import { IoIosArrowBack } from "react-icons/io";
 import { AiOutlineCheck } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import Head from "next/head";
 
 export default function Page() {
   const router = useRouter();
 
   return (
     <div className="relative flex flex-col gap-8 w-full h-[100dvh] justify-center bg-black">
+      <Head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="TikBlog" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+      </Head>
       <Image
         src="/reel_placeholder.jpg"
         alt=""
