@@ -10,6 +10,7 @@ import {
   useState,
   useMemo,
   useCallback,
+  useEffect,
 } from "react";
 
 // Define a counter to generate unique IDs
@@ -68,10 +69,12 @@ export const FactoryComponentContext = createContext<{
     i: number,
     component: Partial<FactoryComponentProps>
   ) => void;
+  updateComponentType: (i: number, type: string) => void;
   deleteComponent: (i: number) => void;
 }>({
   components: [],
   addComponent: () => {},
+  updateComponentType: () => {},
   addAllComponents: () => {},
   updateComponent: () => {},
   deleteComponent: () => {},
@@ -99,6 +102,10 @@ export function FactoryComponentProvider({ children }: { children?: any }) {
     dispatch({ type: "update", payload: { id, component } });
   }
 
+  function updateComponentType(id: number, type: string) {
+    dispatch({ type: "updateType", payload: { id, type } });
+  }
+
   // Delete a component from the registry
   function deleteComponent(id: number) {
     console.log("called delete", id);
@@ -109,6 +116,7 @@ export function FactoryComponentProvider({ children }: { children?: any }) {
   const providerValue = {
     components,
     addComponent,
+    updateComponentType,
     addAllComponents,
     updateComponent,
     deleteComponent,
@@ -177,6 +185,15 @@ function componentReducer(
             }
           : e
       );
+    case "updateType":
+      return components.map((e) =>
+        e.id === action.payload.id
+          ? {
+              ...e,
+              type: action.payload.type,
+            }
+          : e
+      );
     case "delete":
       return components.filter((prop, i) => {
         return prop.id !== action.payload.id;
@@ -214,6 +231,10 @@ export function useRegistryState(props: Record<string, any>) {
 
       setState(value);
     }, []);
+
+    useEffect(() => {
+      initialValue && setStateHook(initialValue);
+    }, [initialValue, setStateHook]);
 
     return [stateMemo, setStateHook];
   }
