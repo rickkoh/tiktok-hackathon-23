@@ -25,12 +25,28 @@ function ProductEditor(props: Props) {
     <>
       {editing ? (
         <div className="flex flex-col gap-2">
-          <input
-            value={productUrl}
-            placeholder="Product url"
-            onChange={(e) => setText(e.target.value)}
-            className="w-full h-fit focus:outline-none p-2 rounded-lg border border-gray-300"
-          />
+          <div className="relative flex flex-col gap-2 rounded-lg border border-gray-300">
+            <div className="flex flex-row gap-2 absolute left-1/2 top-2 -translate-x-1/2">
+              <svg
+                width="29"
+                height="7"
+                viewBox="0 0 29 7"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="3.5" cy="3.5" r="3.5" fill="#D9D9D9" />
+                <circle cx="14.5" cy="3.5" r="3.5" fill="#D9D9D9" />
+                <circle cx="25.5" cy="3.5" r="3.5" fill="#D9D9D9" />
+              </svg>
+            </div>
+            <h1 className="text-xl px-2 pt-6">Product</h1>
+            <input
+              value={productUrl}
+              placeholder="Url"
+              onChange={(e) => setText(e.target.value)}
+              className="w-full h-fit focus:outline-none p-2 py-0 mb-4"
+            />
+          </div>
           <div className="flex w-full justify-center gap-2">
             <button
               onClick={() => {
