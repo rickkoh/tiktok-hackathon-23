@@ -249,7 +249,7 @@ function BlogFactoryComponents() {
     loadProductComponent();
     loadImageComponent();
     addAllComponents(fakeComponents);
-  }, [addAllComponents]);
+  }, []);
   return <FactoryComponents />;
 }
 
