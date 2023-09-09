@@ -209,7 +209,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
               className="w-12 h-12 rounded-full aspect-square"
             />
             <div className="flex flex-col leading-none">
-              <div>Cap'n Crunch</div>
+              <div>Cap&apos;n Crunch</div>
               <div className="text-gray-400">5 min read</div>
             </div>
             <div className="flex flex-col leading-none ml-2">
@@ -249,7 +249,7 @@ function BlogFactoryComponents() {
     loadProductComponent();
     loadImageComponent();
     addAllComponents(fakeComponents);
-  }, []);
+  }, [addAllComponents]);
   return <FactoryComponents />;
 }
 
