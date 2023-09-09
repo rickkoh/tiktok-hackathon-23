@@ -1,17 +1,22 @@
 import Image from "next/image";
 import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
+import Link from "next/link";
 
 interface Props {
   id?: number;
   title: string;
   src: string;
   description: string;
+  url?: string;
   // price: number;
 }
 
 export default function ProductComponent(props: Props) {
   return (
-    <div className="w-full h-fit px-3 py-2 items-center rounded-lg flex flex-row bg-gray-100 gap-4 my-1">
+    <Link
+      className="w-full h-fit px-3 py-2 items-center rounded-lg flex flex-row bg-gray-100 gap-4 my-1"
+      href={props.url ?? ""}
+    >
       <Image
         src={props.src}
         width={128}
@@ -30,7 +35,7 @@ export default function ProductComponent(props: Props) {
           <p className="text-xs">{props.description}</p>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
