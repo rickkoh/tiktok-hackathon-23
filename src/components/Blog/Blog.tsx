@@ -160,15 +160,24 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
   return (
     <>
       {showModal && (
-        <section
-          id="toolbar"
-          className="fixed flex flex-row justify-between items-center px-16 py-4 pb-8 bottom-0 left-0 h-fit w-full bg-white z-50"
-        >
-          <BsShare className="w-6 h-6" />
-          <BsBookmark className="w-6 h-6" />
-          <BsChat className="w-6 h-6" />
-          <BsHeart className="w-6 h-6" />
-        </section>
+        <>
+          <div
+            className="fixed top-0 left-0 w-full h-[100dvh] opacity-0"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+            }}
+          />
+          <section
+            id="toolbar"
+            className="fixed flex flex-row justify-between items-center px-16 py-4 pb-8 bottom-0 left-0 h-fit w-full bg-white z-50"
+          >
+            <BsShare className="w-6 h-6" />
+            <BsBookmark className="w-6 h-6" />
+            <BsChat className="w-6 h-6" />
+            <BsHeart className="w-6 h-6" />
+          </section>
+        </>
       )}
       <div
         ref={mainRef}
