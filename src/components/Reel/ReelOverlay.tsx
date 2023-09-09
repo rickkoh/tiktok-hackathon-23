@@ -11,7 +11,7 @@ function ReelOverlay(props: ReelOverlayProps) {
   const blogRef = useRef<BlogRef>(null);
   return (
     <>
-      <div className="absolute bottom-0 left-0 right-0 flex justify-end text-secondary p-3">
+      <div className="absolute bottom-20 left-0 right-0 flex justify-end text-secondary p-3">
         <section className="grow self-end">
           <h2 className="text-lg font-semibold mb-2">
             {props.reel.user_profiles.name}
