@@ -20,17 +20,21 @@ function ReelOverlay(props: ReelOverlayProps) {
           <p>{props.reel.caption}</p>
         </section>
         <aside className="flex flex-col gap-y-6">
-          <Image
-            src="/blog_icon.png"
-            width={27}
-            height={27}
-            alt="Blog icon"
+          <button
             onClick={() => {
               if (blogRef.current) {
                 blogRef.current.open();
               }
             }}
-          />
+            className="animate-pulse"
+          >
+            <Image
+              src="/blog_icon.png"
+              width={27}
+              height={27}
+              alt="Blog icon"
+            />
+          </button>
           <div>
             <Image
               src="/like_icon.png"
