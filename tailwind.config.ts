@@ -31,6 +31,9 @@ const config: Config = {
           DEFAULT: "#EBEBEB",
         },
       },
+      animation: {
+        "spin-slow": "spin 3s linear infinite",
+      },
     },
   },
   plugins: [],
