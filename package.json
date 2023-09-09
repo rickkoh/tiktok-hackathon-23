@@ -25,6 +25,7 @@
     "react-draggable": "^4.4.5",
     "react-icons": "^4.10.1",
     "react-markdown": "^8.0.7",
+    "react-use-scroll-snap": "^1.0.0",
     "remark-parse": "^10.0.2",
     "remark-stringify": "^10.0.3",
     "tailwindcss": "3.3.3",
