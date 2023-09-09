@@ -1,4 +1,9 @@
 "use client";
+import TikTokCreateButton from "@/icons/TikTokCreateButton";
+import TikTokDiscoverButtonOutline from "@/icons/TikTokDiscoverButtonOutline";
+import TikTokHomeButtonOutline from "@/icons/TikTokHomeButtonOutline";
+import TikTokInboxButtonOutline from "@/icons/TikTokInboxButtonOutline";
+import TikTokProfileButtonOutline from "@/icons/TikTokProfileButtonOutline";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -38,13 +43,21 @@ function BottomNavbar() {
 
   return (
     <nav className="flex flex-row w-full h-20 fixed bottom-0 justify-evenly items-center bg-primary pt-1.5 pb-5 text-secondary">
-      <Image src="/home_icon.png" alt="" width={30} height={30} />
-      <Image src="/shop_icon.png" alt="" width={30} height={30} />
-      <button onClick={() => router.push("/add-reel")}>
-        <Image src="/create_button.png" alt="" width={30} height={30} />
+      <button>
+        <TikTokHomeButtonOutline />
       </button>
-      <Image src="/inbox_icon.png" alt="" width={30} height={30} />
-      <Image src="/profile_icon.png" alt="" width={30} height={30} />
+      <button>
+        <TikTokDiscoverButtonOutline />
+      </button>
+      <button onClick={() => router.push("/add-reel")}>
+        <TikTokCreateButton />
+      </button>
+      <button>
+        <TikTokInboxButtonOutline />
+      </button>
+      <button>
+        <TikTokProfileButtonOutline />
+      </button>
     </nav>
   );
 }
