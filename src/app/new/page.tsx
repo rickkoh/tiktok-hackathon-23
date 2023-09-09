@@ -17,7 +17,7 @@ import { useContext, useEffect, useState } from "react";
 import { AiOutlineLink, AiOutlinePlus } from "react-icons/ai";
 import { PiImageLight, PiTextTLight } from "react-icons/pi";
 
-export default function () {
+export default function Page() {
   const [title, setTitle] = useState("");
   return (
     <main className="w-full h-[100dvh] flex flex-col">
