@@ -16,7 +16,6 @@ import {
 // Define a counter to generate unique IDs
 let counter = 0;
 function nextId() {
-  console.log("counter, ", counter);
   counter += 1;
   return counter;
 }
