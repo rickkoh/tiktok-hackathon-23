@@ -10,11 +10,13 @@ import {
   useState,
   useMemo,
   useCallback,
+  useEffect,
 } from "react";
 
 // Define a counter to generate unique IDs
 let counter = 0;
 function nextId() {
+  console.log("counter, ", counter);
   counter += 1;
   return counter;
 }
@@ -68,10 +70,12 @@ export const FactoryComponentContext = createContext<{
     i: number,
     component: Partial<FactoryComponentProps>
   ) => void;
+  updateComponentType: (i: number, type: string) => void;
   deleteComponent: (i: number) => void;
 }>({
   components: [],
   addComponent: () => {},
+  updateComponentType: () => {},
   addAllComponents: () => {},
   updateComponent: () => {},
   deleteComponent: () => {},
@@ -99,6 +103,10 @@ export function FactoryComponentProvider({ children }: { children?: any }) {
     dispatch({ type: "update", payload: { id, component } });
   }
 
+  function updateComponentType(id: number, type: string) {
+    dispatch({ type: "updateType", payload: { id, type } });
+  }
+
   // Delete a component from the registry
   function deleteComponent(id: number) {
     console.log("called delete", id);
@@ -109,6 +117,7 @@ export function FactoryComponentProvider({ children }: { children?: any }) {
   const providerValue = {
     components,
     addComponent,
+    updateComponentType,
     addAllComponents,
     updateComponent,
     deleteComponent,
@@ -171,8 +180,18 @@ function componentReducer(
           ? {
               ...e,
               props: {
+                ...e.props,
                 ...action.payload.component.props,
               },
+            }
+          : e
+      );
+    case "updateType":
+      return components.map((e) =>
+        e.id === action.payload.id
+          ? {
+              ...e,
+              type: action.payload.type,
             }
           : e
       );
@@ -188,7 +207,7 @@ function componentReducer(
 }
 
 export function useRegistryState(props: Record<string, any>) {
-  function registryState<T>(
+  function RegistryState<T>(
     key: string,
     initialValue?: T
   ): [T, (value: T) => void] {
@@ -202,19 +221,24 @@ export function useRegistryState(props: Record<string, any>) {
       return state;
     }, [state]);
 
-    const setStateHook = useCallback((value: T) => {
-      if (updateComponent !== undefined) {
+    const setStateHook = useCallback(
+      (value: T) => {
         updateComponent(props.id, {
           props: {
             [key]: value,
           },
         });
-      }
 
-      setState(value);
-    }, []);
+        setState(value);
+      },
+      [key]
+    );
+
+    useEffect(() => {
+      initialValue && setStateHook(initialValue);
+    }, [initialValue, setStateHook]);
 
     return [stateMemo, setStateHook];
   }
-  return registryState;
+  return RegistryState;
 }

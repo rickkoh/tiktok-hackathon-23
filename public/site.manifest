@@ -1,0 +1,17 @@
+{
+  "name": "TikBlog",
+  "short_name": "TikBlog",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "240x240",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

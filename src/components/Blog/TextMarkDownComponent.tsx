@@ -1,8 +1,8 @@
-import { memo, useEffect, useState } from "react";
-import { registerComponent } from "../ComponentRegistry/FactoryComponent";
+import { useEffect, useState } from "react";
 import { Root } from "remark-parse/lib";
 import ReactMarkdown from "react-markdown";
 import { astToMarkDown } from "@/utils/helper";
+import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
 
 interface Props {
   ast: Root;
@@ -18,7 +18,7 @@ const TextMarkDownComponent = (props: Props) => {
     })();
   }, [props.ast]);
 
-  return <ReactMarkdown className="markdown" children={markDown} />;
+  return <ReactMarkdown className="markdown">markDown</ReactMarkdown>;
 };
 
 export const loadTextMarkDownComponent = () => {

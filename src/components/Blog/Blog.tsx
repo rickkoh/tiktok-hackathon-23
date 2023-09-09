@@ -6,6 +6,7 @@ import {
   useEffect,
   useImperativeHandle,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -123,13 +124,35 @@ export interface BlogRef {
 }
 
 function Blog(props: Props, ref: Ref<BlogRef>) {
-  // Component state
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const [fullscreenModal, setFullscreenModal] = useState(false);
 
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  function handleScroll(e: any) {
+    if (e.target.scrollTop >= 50) {
+      setFullscreenModal(true);
+    } else if (e.target.scrollTop <= -50) {
+      handleClose();
+    } else {
+      setFullscreenModal(false);
+    }
+  }
+
+  function handleClose() {
+    setShowModal(false);
+    setFullscreenModal(false);
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     open: () => {
+      if (mainRef.current) {
+        mainRef.current.scrollTo({ top: 0, behavior: "instant" });
+      }
       setShowModal(true);
     },
   }));
@@ -137,18 +160,28 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
   return (
     <>
       {showModal && (
-        <section
-          id="toolbar"
-          className="fixed flex flex-row justify-between items-center px-16 py-4 bottom-0 left-0 h-fit w-full bg-white z-50"
-        >
-          <BsShare className="w-6 h-6" />
-          <BsBookmark className="w-6 h-6" />
-          <BsChat className="w-6 h-6" />
-          <BsHeart className="w-6 h-6" />
-        </section>
+        <>
+          <div
+            className="fixed top-0 left-0 w-full h-[100dvh] opacity-0"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+            }}
+          />
+          <section
+            id="toolbar"
+            className="fixed flex flex-row justify-between items-center px-16 py-4 pb-8 bottom-0 left-0 h-fit w-full bg-white z-50"
+          >
+            <BsShare className="w-6 h-6" />
+            <BsBookmark className="w-6 h-6" />
+            <BsChat className="w-6 h-6" />
+            <BsHeart className="w-6 h-6" />
+          </section>
+        </>
       )}
       <div
-        className={`fixed transition-all duration-500 w-full h-[100dvh] rounded-t-xl shadow-xl flex flex-col gap-4 bg-background overflow-scroll top-0 z-10
+        ref={mainRef}
+        className={`fixed transition-all duration-500 w-full h-[100dvh] rounded-t-xl shadow-xl flex flex-col gap-4 bg-background overflow-scroll top-0 z-10 overscroll-none
     ${
       showModal
         ? fullscreenModal
@@ -157,6 +190,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
         : "translate-y-full"
     }
     `}
+        onScroll={handleScroll}
       >
         <section id="nav" className="sticky top-0 left-0">
           <div className="w-full h-12 p-3 flex flex-row justify-end bg-white items-center">
@@ -168,20 +202,12 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
             >
               <div className="w-32 h-1 rounded-full transition-all duration-300 bg-gray-200 hover:bg-gray-600" />
             </button>
-            <button
-              className="absolute right-5"
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
+            <button className="absolute right-5" onClick={handleClose}>
               <AiOutlineClose className="w-6 h-6 transition-all duration-300 hover:text-red-500" />
             </button>
           </div>
         </section>
         <section className="p-6 pt-0 py-3 flex flex-col gap-3">
-          {
-            // Eventually will need to retrieve data from database
-          }
           <h1 className="text-2xl font-bold">Top 3 Rubber Duckies</h1>
           <div className="flex flex-row gap-3 items-center">
             <Image
@@ -192,7 +218,7 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
               className="w-12 h-12 rounded-full aspect-square"
             />
             <div className="flex flex-col leading-none">
-              <div>Cap'n Crunch</div>
+              <div>Cap&apos;n Crunch</div>
               <div className="text-gray-400">5 min read</div>
             </div>
             <div className="flex flex-col leading-none ml-2">

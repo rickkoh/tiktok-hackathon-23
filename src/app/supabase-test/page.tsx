@@ -50,8 +50,8 @@ export default function SupabaseTest() {
     <main className="flex flex-col w-full bg-secondary">
       <h1>Test Page</h1>
       <p>Test Database Connection with Reels Table</p>
-      {data.map((reel) => (
-        <p>{JSON.stringify(reel)}</p>
+      {data.map((reel, i) => (
+        <p key={i}>{JSON.stringify(reel)}</p>
       ))}
       <button
         className="border w-fit h-fit border-black px-3 py-1 bg-blue-300"
@@ -68,7 +68,7 @@ export default function SupabaseTest() {
         onChange={(e) => setMarkDown(e.target.value)}
       />
       <h1>Markdown Render Test</h1>
-      <ReactMarkdown className="markdown" children={markDown} />
+      <ReactMarkdown className="markdown">{markDown}</ReactMarkdown>
       <h1 className="text-lg">AST Converter Test</h1>
       <p>{JSON.stringify(markDownAst)}</p>
       <button
@@ -87,7 +87,7 @@ export default function SupabaseTest() {
         onChange={(e) => setMarkDownAstStr(e.target.value)}
       />
       <p>Converted Markdown render</p>
-      <ReactMarkdown className="markdown" children={markDown2} />
+      <ReactMarkdown className="markdown">{markDown2}</ReactMarkdown>
       <button
         className="border w-fit h-fit border-black px-3 py-1 bg-blue-300"
         onClick={() => {
