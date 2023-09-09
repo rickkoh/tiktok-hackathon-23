@@ -11,7 +11,6 @@ function ReelOverlay(props: ReelOverlayProps) {
   const blogRef = useRef<BlogRef>(null);
   return (
     <>
-      <Blog ref={blogRef} />
       <div className="absolute bottom-0 left-0 right-0 flex justify-end text-secondary p-3">
         <section className="grow self-end">
           <h2 className="text-lg font-semibold mb-2">
@@ -60,6 +59,7 @@ function ReelOverlay(props: ReelOverlayProps) {
           />
         </aside>
       </div>
+      <Blog ref={blogRef} />
     </>
   );
 }
