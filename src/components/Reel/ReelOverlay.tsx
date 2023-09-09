@@ -1,16 +1,23 @@
 import Image from "next/image";
 import { useRef } from "react";
 import Blog, { BlogRef } from "../Blog/Blog";
+import { ReelType, Tables } from "@/types";
 
-function ReelOverlay() {
+export interface ReelOverlayProps {
+  reel: ReelType;
+}
+
+function ReelOverlay(props: ReelOverlayProps) {
   const blogRef = useRef<BlogRef>(null);
   return (
     <>
       <Blog ref={blogRef} />
       <div className="absolute bottom-0 left-0 right-0 flex justify-end text-secondary p-3">
         <section className="grow self-end">
-          <h2 className="text-lg font-semibold mb-2">ddania2855</h2>
-          <p>Caption Test</p>
+          <h2 className="text-lg font-semibold mb-2">
+            {props.reel.user_profiles.name}
+          </h2>
+          <p>{props.reel.caption}</p>
         </section>
         <aside className="flex flex-col gap-y-6">
           <Image
@@ -31,7 +38,9 @@ function ReelOverlay() {
               height={27}
               alt="Like icon"
             />
-            <small className="text-sm">200</small>
+            <small className="text-sm">
+              {Math.floor(Math.random() * (5000 - 1 + 1)) + 1}
+            </small>
           </div>
           <Image
             src="/comment_icon.png"

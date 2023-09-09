@@ -27,8 +27,6 @@ export default function SupabaseTest() {
 
     if (error) {
       console.error(error);
-    } else {
-      console.log(data);
     }
     setIsLoading(false);
   }, [supabase]);
