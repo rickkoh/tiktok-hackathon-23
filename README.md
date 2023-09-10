@@ -20,7 +20,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 **TikBlog**
 
-![til](./public/demo.gif)
+[![Video](https://img.youtube.com/vi/UkcB-6us_ew/maxresdefault.jpg)](https://www.youtube.com/watch?v=UkcB-6us_ew)
+https://www.youtube.com/watch?v=UkcB-6us_ew
 
 # Elevator Pitch
 
