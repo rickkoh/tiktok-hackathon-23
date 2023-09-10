@@ -20,6 +20,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 **TikBlog**
 
+![til](./public/demo.gif)
+
 # Elevator Pitch
 
 **TikBlog** is a blog feature enhancing TikTok's content landscape. It enables long-form content, appealing to a broader audience seeking in-depth explanations and breakdowns. With TikBlog, content creators can seamlessly promote TikTok commerce products within reels, effectively offering product reviews. The concise write-ups also contribute to boosting TikTok's SEO, strengthening its market presence.
