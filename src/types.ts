@@ -307,6 +307,8 @@ export interface Database {
   };
 }
 
+export interface ComponentRegistry {}
+
 export interface ReelType extends Tables<"reels"> {
   videoUrl?: string;
   blogs: Tables<"blogs">[];
