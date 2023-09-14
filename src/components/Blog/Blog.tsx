@@ -132,7 +132,7 @@ interface BlogDataType extends Omit<Tables<"blogs">, "component_registry"> {
 }
 
 interface BlogProps {
-  // reel_id: string;
+  reel_id: string;
 }
 
 export interface BlogRef {
@@ -149,7 +149,7 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
     const { data, error } = await supabase
       .from("blogs")
       .select("*, user_profiles(*)")
-      .eq("reel_id", "787336ef-93e7-4977-8a83-eccbf4a43d77");
+      .eq("reel_id", props.reel_id);
 
     if (error) {
       console.error(error);
@@ -160,8 +160,6 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
     const componentRegistry = data[0]
       .component_registry as unknown[] as ComponentRegistry[];
 
-    console.log(data[0].user_profiles);
-
     const BlogData: BlogDataType = {
       component_registry: componentRegistry,
       id: data[0].id,
@@ -169,7 +167,7 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
       created_at: data[0].created_at,
       updated_at: data[0].updated_at,
       user_id: data[0].user_id,
-      user_profile: data[0].user_profiles as unknown as Tables<"user_profiles">,
+      user_profile: data[0].user_profiles as unknown as Tables<"user_profiles">, // supabase has a current bug
     };
 
     setBlogData(BlogData);

@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 import { astToMarkDown } from "@/utils/helper";
 interface Props {
   ast: Root;
+  id?: number;
+  // text: string;
 }
 
 const TextComponent = (props: Props) => {
-  const [markDown, setMarkDown] = useState<string>(``);
-
+  const [markDown, setMarkDown] = useState<string>("");
   useEffect(() => {
     (async () => {
       const markDownStr = await astToMarkDown(props.ast);
