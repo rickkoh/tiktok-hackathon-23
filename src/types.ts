@@ -1,7 +1,3 @@
-// Write the types for the objects here
-
-export interface ComponentRegistry {}
-
 // Supabase Db types
 export type Json =
   | string

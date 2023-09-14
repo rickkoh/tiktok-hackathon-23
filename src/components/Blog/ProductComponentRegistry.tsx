@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
+import { registerComponent } from "../ComponentFactory/ComponentFactory";
 import Link from "next/link";
 import Stars from "../Product/Stars";
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Root } from "remark-parse/lib";
 import ReactMarkdown from "react-markdown";
 import { astToMarkDown } from "@/utils/helper";
-import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
+import { registerComponent } from "../ComponentFactory/ComponentFactory";
 
 interface Props {
   ast: Root;

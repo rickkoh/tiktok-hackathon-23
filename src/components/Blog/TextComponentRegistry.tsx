@@ -1,12 +1,11 @@
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
+import { registerComponent } from "../ComponentFactory/ComponentFactory";
 import { Root } from "remark-parse/lib";
 import { useEffect, useState } from "react";
 import { astToMarkDown } from "@/utils/helper";
 interface Props {
-  ast: Root;
   id?: number;
-  // text: string;
+  ast: Root;
 }
 
 const TextComponent = (props: Props) => {
@@ -16,7 +15,7 @@ const TextComponent = (props: Props) => {
       const markDownStr = await astToMarkDown(props.ast);
       setMarkDown(markDownStr);
     })();
-  }, [props.ast]);
+  }, [props.ast, props.id]);
 
   return <ReactMarkdown className="markdown">{markDown}</ReactMarkdown>;
 };

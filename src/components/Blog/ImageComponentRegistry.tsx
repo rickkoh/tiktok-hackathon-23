@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
+import { registerComponent } from "../ComponentFactory/ComponentFactory";
 
 interface Props {
   src: string;

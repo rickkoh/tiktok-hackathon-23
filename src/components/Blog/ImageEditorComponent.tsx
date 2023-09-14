@@ -4,39 +4,47 @@ import {
   FactoryComponentContext,
   registerComponent,
   useRegistryState,
-} from "../ComponentFactory.tsx/ComponentFactory";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { BsFileImage } from "react-icons/bs";
+} from "../ComponentFactory/ComponentFactory";
+import { useContext, useState } from "react";
 import { PiImageLight } from "react-icons/pi";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types";
+import uuid from "react-uuid";
 
 interface Props {
   id: number;
-  file?: File;
-  altText?: string;
+  alt?: string;
   editing?: boolean;
+  src?: string;
 }
 
 function ImageEditor(props: Props) {
   const registryState = useRegistryState(props);
+  const supabase = createClientComponentClient<Database>();
 
-  const [file, setFile] = registryState<File>("file");
   const [imageSrc, setImageSrc] = useState<string>();
-  const [altText, setAltText] = registryState<string>("altText");
+  const [src, setSrc] = registryState<string>("src");
+  const [alt, setAlt] = registryState<string>("alt");
   const [editing, setEditing] = registryState<boolean>("editing", true);
 
   const { deleteComponent } = useContext(FactoryComponentContext);
 
-  function handleImageChange(e: any) {
-    // Store the file to the bucket
-    // Get the url
-    // Set the url to the image src
+  const handleImageChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log(file);
-      setFile(file);
+      let { data } = await supabase.storage
+        .from("blog-images")
+        .upload(`/${uuid()}-${file.name}`, file);
+
+      if (data) {
+        const src = supabase.storage.from("blog-images").getPublicUrl(data.path)
+          .data.publicUrl;
+        setSrc(src);
+      }
+
       setImageSrc(URL.createObjectURL(file));
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-2 w-full h-fit">
@@ -64,7 +72,7 @@ function ImageEditor(props: Props) {
               <>
                 <Image
                   src={imageSrc ?? ""}
-                  alt={altText ?? ""}
+                  alt={alt ?? ""}
                   width={100}
                   height={100}
                   objectFit="contain"
@@ -81,8 +89,8 @@ function ImageEditor(props: Props) {
           </div>
           <input
             placeholder="Alt Text"
-            value={altText ?? ""}
-            onChange={(e) => setAltText(e.target.value)}
+            value={alt ?? ""}
+            onChange={(e) => setAlt(e.target.value)}
             className="focus:outline-none p-2 rounded-lg border border-gray-300 text-sm"
           />
           <div className="flex w-full justify-center gap-2">
@@ -137,13 +145,13 @@ function ImageEditor(props: Props) {
           <div>
             <Image
               src={imageSrc ?? ""}
-              alt={altText ?? ""}
+              alt={alt ?? ""}
               width={100}
               height={100}
               objectFit="contain"
               className="w-full h-full rounded-lg"
             />
-            <p className="text-gray-500 text-sm">{altText}</p>
+            <p className="text-gray-500 text-sm">{alt}</p>
           </div>
           <button
             onClick={() => {

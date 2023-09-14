@@ -6,7 +6,6 @@ import {
   useContext,
   useEffect,
   useImperativeHandle,
-  useReducer,
   useRef,
   useState,
 } from "react";
@@ -14,7 +13,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import { loadTextComponent } from "./TextComponentRegistry";
 import { loadProductComponent } from "./ProductComponentRegistry";
 import { loadTitleComponent } from "./TitleComponentRegistry";
-import Image from "next/image";
 import { loadImageComponent } from "./ImageComponentRegistry";
 import { BsShare, BsChat, BsBookmark, BsHeart } from "react-icons/bs";
 import {
@@ -22,109 +20,103 @@ import {
   FactoryComponentContext,
   FactoryComponents,
   FactoryComponentProvider,
-} from "../ComponentFactory.tsx/ComponentFactory";
+} from "../ComponentFactory/ComponentFactory";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database, Tables } from "@/types";
+import BlogProfile from "../Profile/BlogProfile";
 
 // Backend to retrieve the data here
 
-/**
- * Blog has two state,
- * 1. Blog in modal view when the widget is clicked
- * 2. Able to xxpand fully when the widget is dragged up
- */
-
 // database
-
 // fake data here for now
 // make changes to the fake data to see how componentregistry works
 // data here will eventually be fetched from live database
 
-// const fakeComponents: ComponentRegistry[] = [
-//   {
-//     type: "Text",
-//     props: {
-//       text: "Rubber duckies have been a beloved bathtub companion for generations, bringing joy and laughter to bath time routines. These timeless toys come in a variety of shapes and sizes, but in this article, we're diving into the world of rubber duckies to uncover the top three must-have rubber duckies. Among them, you'll find one that's sure to make waves – the Donald Duck, a rubber ducky inspired by the iconic Donald Trump.",
-//     },
-//   },
-//   {
-//     type: "Title",
-//     props: {
-//       text: "1. Donald Duck: A Presidential Quack-tastic Addition",
-//     },
-//   },
-//   {
-//     type: "Product",
-//     props: {
-//       title: "Donald Duck",
-//       src: "/donald_duck.jpg",
-//       description: "12,000 sold",
-//       productUrl:
-//         "https://www.tiktok.com/view/product/1729414184343667837?checksum=04560ef5ccc8ebad56ae17af9dc91355f9df2d7b0f8f405681a2d30a4084871d&sec_user_id=MS4wLjABAAAAvUuIrkazMyfod1E6pr9dmXlNr7Aq4B1Ud7rdi4rKGiZsbKdK-yxONPvqnDdhmBeG&share_app_id=1180&share_link_id=95FDFF8B-5EC3-476E-8757-4D1FC1C77C42&social_share_type=15&timestamp=1694263941&trackParams=%7B%22source_page_type%22%3A%22product_share%22%2C%22enter_from_info%22%3A%22product_share_outside%22%2C%22traffic_source_list%22%3A%5B%5D%7D&tt_from=copy&u_code=DG9F1MBMBKI%3A04&ug_btm=b6880%2Cb6661&unique_id=r1ckkoh&user_id=6912306946356659206&utm_campaign=client_share&utm_medium=ios&utm_source=copy",
-//       rating: 5,
-//     },
-//   },
-//   {
-//     type: "Text",
-//     props: {
-//       text: "The Donald Duck rubber ducky is not your ordinary bath toy. Modeled after the former President of the United States, Donald Trump, this whimsical creation adds a unique twist to the classic rubber ducky. With meticulous attention to detail, it features the signature hairstyle, suit, and even a tiny red tie.",
-//     },
-//   },
-//   {
-//     type: "Image",
-//     props: {
-//       src: "/donald_duck2.png",
-//       alt: "Rubber Ducky held by Jesus' hand",
-//     },
-//   },
-//   {
-//     type: "Title",
-//     props: {
-//       text: "Features:",
-//     },
-//   },
-//   {
-//     type: "Text",
-//     props: {
-//       text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
-//     },
-//   },
-//   {
-//     type: "Text",
-//     props: {
-//       text: "Whether you're a fan of Donald Trump or simply appreciate the novelty of this one-of-a-kind rubber duck, the Donald Duck is sure to be a conversation starter.",
-//     },
-//   },
-//   {
-//     type: "Title",
-//     props: {
-//       text: "2. Classic Yellow Rubber Ducky: Timeless Charm",
-//     },
-//   },
-//   {
-//     type: "Product",
-//     props: {
-//       title: "Title",
-//       src: "/donald_duck.jpg",
-//       description: "Proin vehicula dui at odio commodo uix phoinex.",
-//       productUrl:
-//         "https://www.tiktok.com/view/product/1729414184343667837?checksum=04560ef5ccc8ebad56ae17af9dc91355f9df2d7b0f8f405681a2d30a4084871d&sec_user_id=MS4wLjABAAAAvUuIrkazMyfod1E6pr9dmXlNr7Aq4B1Ud7rdi4rKGiZsbKdK-yxONPvqnDdhmBeG&share_app_id=1180&share_link_id=95FDFF8B-5EC3-476E-8757-4D1FC1C77C42&social_share_type=15&timestamp=1694263941&trackParams=%7B%22source_page_type%22%3A%22product_share%22%2C%22enter_from_info%22%3A%22product_share_outside%22%2C%22traffic_source_list%22%3A%5B%5D%7D&tt_from=copy&u_code=DG9F1MBMBKI%3A04&ug_btm=b6880%2Cb6661&unique_id=r1ckkoh&user_id=6912306946356659206&utm_campaign=client_share&utm_medium=ios&utm_source=copy",
-//       rating: 5,
-//     },
-//   },
-//   {
-//     type: "Text",
-//     props: {
-//       text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
-//     },
-//   },
-//   {
-//     type: "Text",
-//     props: {
-//       text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
-//     },
-//   },
-// ];
+const fakeComponents: ComponentRegistry[] = [
+  {
+    type: "Text",
+    props: {
+      text: "Rubber duckies have been a beloved bathtub companion for generations, bringing joy and laughter to bath time routines. These timeless toys come in a variety of shapes and sizes, but in this article, we're diving into the world of rubber duckies to uncover the top three must-have rubber duckies. Among them, you'll find one that's sure to make waves – the Donald Duck, a rubber ducky inspired by the iconic Donald Trump.",
+    },
+  },
+  {
+    type: "Title",
+    props: {
+      text: "1. Donald Duck: A Presidential Quack-tastic Addition",
+    },
+  },
+  {
+    type: "Product",
+    props: {
+      title: "Donald Duck",
+      src: "/donald_duck.jpg",
+      description: "12,000 sold",
+      productUrl:
+        "https://www.tiktok.com/view/product/1729414184343667837?checksum=04560ef5ccc8ebad56ae17af9dc91355f9df2d7b0f8f405681a2d30a4084871d&sec_user_id=MS4wLjABAAAAvUuIrkazMyfod1E6pr9dmXlNr7Aq4B1Ud7rdi4rKGiZsbKdK-yxONPvqnDdhmBeG&share_app_id=1180&share_link_id=95FDFF8B-5EC3-476E-8757-4D1FC1C77C42&social_share_type=15&timestamp=1694263941&trackParams=%7B%22source_page_type%22%3A%22product_share%22%2C%22enter_from_info%22%3A%22product_share_outside%22%2C%22traffic_source_list%22%3A%5B%5D%7D&tt_from=copy&u_code=DG9F1MBMBKI%3A04&ug_btm=b6880%2Cb6661&unique_id=r1ckkoh&user_id=6912306946356659206&utm_campaign=client_share&utm_medium=ios&utm_source=copy",
+      rating: 5,
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "The Donald Duck rubber ducky is not your ordinary bath toy. Modeled after the former President of the United States, Donald Trump, this whimsical creation adds a unique twist to the classic rubber ducky. With meticulous attention to detail, it features the signature hairstyle, suit, and even a tiny red tie.",
+    },
+  },
+  {
+    type: "Image",
+    props: {
+      src: "/donald_duck2.png",
+      alt: "Rubber Ducky held by Jesus' hand",
+    },
+  },
+  {
+    type: "Title",
+    props: {
+      text: "Features:",
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Whether you're a fan of Donald Trump or simply appreciate the novelty of this one-of-a-kind rubber duck, the Donald Duck is sure to be a conversation starter.",
+    },
+  },
+  {
+    type: "Title",
+    props: {
+      text: "2. Classic Yellow Rubber Ducky: Timeless Charm",
+    },
+  },
+  {
+    type: "Product",
+    props: {
+      title: "Title",
+      src: "/donald_duck.jpg",
+      description: "Proin vehicula dui at odio commodo uix phoinex.",
+      productUrl:
+        "https://www.tiktok.com/view/product/1729414184343667837?checksum=04560ef5ccc8ebad56ae17af9dc91355f9df2d7b0f8f405681a2d30a4084871d&sec_user_id=MS4wLjABAAAAvUuIrkazMyfod1E6pr9dmXlNr7Aq4B1Ud7rdi4rKGiZsbKdK-yxONPvqnDdhmBeG&share_app_id=1180&share_link_id=95FDFF8B-5EC3-476E-8757-4D1FC1C77C42&social_share_type=15&timestamp=1694263941&trackParams=%7B%22source_page_type%22%3A%22product_share%22%2C%22enter_from_info%22%3A%22product_share_outside%22%2C%22traffic_source_list%22%3A%5B%5D%7D&tt_from=copy&u_code=DG9F1MBMBKI%3A04&ug_btm=b6880%2Cb6661&unique_id=r1ckkoh&user_id=6912306946356659206&utm_campaign=client_share&utm_medium=ios&utm_source=copy",
+      rating: 5,
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
+    },
+  },
+  {
+    type: "Text",
+    props: {
+      text: "Pudor lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius ligula id mauris pulvinar lobortis. Mauris sagittis scelerisque",
+    },
+  },
+];
 
 interface BlogDataType extends Omit<Tables<"blogs">, "component_registry"> {
   component_registry: ComponentRegistry[];
@@ -132,7 +124,9 @@ interface BlogDataType extends Omit<Tables<"blogs">, "component_registry"> {
 }
 
 interface BlogProps {
-  reel_id: string;
+  reel_id?: string;
+  title?: string;
+  componentRegistry?: ComponentRegistry[];
 }
 
 export interface BlogRef {
@@ -146,6 +140,10 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
   const [blogData, setBlogData] = useState<BlogDataType>();
 
   const getBlogData = useCallback(async () => {
+    if (props.reel_id == null) {
+      return;
+    }
+
     const { data, error } = await supabase
       .from("blogs")
       .select("*, user_profiles(*)")
@@ -160,7 +158,9 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
     const componentRegistry = data[0]
       .component_registry as unknown[] as ComponentRegistry[];
 
-    const BlogData: BlogDataType = {
+    console.log(componentRegistry);
+
+    const blogData: BlogDataType = {
       component_registry: componentRegistry,
       id: data[0].id,
       title: data[0].title,
@@ -170,7 +170,7 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
       user_profile: data[0].user_profiles as unknown as Tables<"user_profiles">, // supabase has a current bug
     };
 
-    setBlogData(BlogData);
+    setBlogData(blogData);
     setIsLoading(false);
   }, [supabase]);
 
@@ -210,6 +210,16 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
       setShowModal(true);
     },
   }));
+
+  const getComponentRegistry = useCallback((): ComponentRegistry[] => {
+    if (props.reel_id) {
+      return blogData?.component_registry ?? [];
+    } else if (props.componentRegistry) {
+      return props.componentRegistry ?? [];
+    } else {
+      return fakeComponents;
+    }
+  }, [props, blogData]);
 
   return isLoading ? (
     <></>
@@ -264,38 +274,20 @@ function Blog(props: BlogProps, ref: Ref<BlogRef>) {
           </div>
         </section>
         <section className="p-6 pt-0 py-3 flex flex-col gap-3">
-          <h1 className="text-2xl font-bold">{blogData?.title}</h1>
-          <div className="flex flex-row gap-3 items-center">
-            <Image
-              src="/dp.jpeg"
-              width={64}
-              height={64}
-              alt=""
-              className="w-12 h-12 rounded-full aspect-square"
-            />
-            <div className="flex flex-col leading-none">
-              <div>{blogData?.user_profile.name}</div>
-              <div className="text-gray-400">5 min read</div>
-            </div>
-            <div className="flex flex-col leading-none ml-2">
-              <button className="text-red-400 text-start hover:text-red-500">
-                Follow
-              </button>
-              <div className="text-gray-400">
-                {new Date(
-                  blogData?.created_at ?? Date.now()
-                ).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </div>
-            </div>
-          </div>
+          <h1 className="text-2xl font-bold">
+            {blogData?.title ?? props.title ?? "Top 3 Rubber Duckies"}
+          </h1>
+          <BlogProfile
+            user={blogData?.user_profile as unknown as Tables<"user_profiles">}
+            minRead={
+              props.componentRegistry
+                ? Math.round(props.componentRegistry.length / 3)
+                : 5
+            }
+            date={new Date(blogData?.created_at ?? Date.now())}
+          />
           <FactoryComponentProvider>
-            <BlogFactoryComponents
-              components={blogData?.component_registry ?? []}
-            />
+            <BlogFactoryComponents components={getComponentRegistry()} />
           </FactoryComponentProvider>
           <section id="comment-section" className="flex flex-col gap-4">
             {
@@ -320,15 +312,19 @@ interface BlogFactoryComponentsProps {
 }
 
 function BlogFactoryComponents(props: BlogFactoryComponentsProps) {
-  const { addAllComponents } = useContext(FactoryComponentContext);
+  const { loadComponents } = useContext(FactoryComponentContext);
 
   useEffect(() => {
     loadTextComponent();
     loadTitleComponent();
     loadProductComponent();
     loadImageComponent();
-    addAllComponents(props.components);
   }, []);
+
+  useEffect(() => {
+    loadComponents(props.components);
+  }, [props.components]);
+
   return <FactoryComponents />;
 }
 
