@@ -40,6 +40,12 @@ export default function Page() {
       </nav>
       <div className="flex flex-col w-full h-full overflow-scroll bg-white p-3 gap-4">
         <h1 className="font-semibold">Customer reviews (4)</h1>
+        <div className="flex flex-row items-center gap-2">
+          <h2>
+            <b className="font-semibold">4.8</b>/5
+          </h2>
+          <Stars rating={5} width={18} height={18} />
+        </div>
         <div className="flex flex-col gap-1 mb-6">
           <div className="flex flex-row items-center gap-2">
             <Image
