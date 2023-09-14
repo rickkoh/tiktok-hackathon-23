@@ -4,7 +4,7 @@ import {
   FactoryComponentContext,
   registerComponent,
   useRegistryState,
-} from "../ComponentFactory.tsx/ComponentFactory";
+} from "../ComponentFactory/ComponentFactory";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 interface Props {

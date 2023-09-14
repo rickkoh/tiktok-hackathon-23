@@ -1,4 +1,5 @@
 "use client";
+import Blog, { BlogRef } from "@/components/Blog/Blog";
 import { loadImageEditorComponent } from "@/components/Blog/ImageEditorComponent";
 import { loadProductEditorComponent } from "@/components/Blog/ProductEditorComponent";
 import { loadTextComponent } from "@/components/Blog/TextComponentRegistry";
@@ -7,13 +8,15 @@ import {
   FactoryComponentContext,
   FactoryComponents,
   FactoryComponentProvider,
-} from "@/components/ComponentFactory.tsx/ComponentFactory";
+  ComponentRegistry,
+} from "@/components/ComponentFactory/ComponentFactory";
 import BlogProfile from "@/components/Profile/BlogProfile";
-import Head from "next/head";
+import { Database } from "@/types";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AiOutlineLink, AiOutlinePlus } from "react-icons/ai";
 import { PiImageLight, PiTextTLight } from "react-icons/pi";
 
@@ -26,7 +29,10 @@ export default function Page() {
 }
 
 function NewPageFactoryComponents() {
+  const supabase = createClientComponentClient<Database>();
+
   const router = useRouter();
+  const blogRef = useRef<BlogRef>(null);
 
   const { components, addComponent, updateComponent } = useContext(
     FactoryComponentContext
@@ -38,6 +44,10 @@ function NewPageFactoryComponents() {
 
   const [expandButtons, setExpandButtons] = useState<boolean>(false);
 
+  const [componentRegistry, setComponentRegistry] = useState<
+    ComponentRegistry[]
+  >([]);
+
   function saveTitle() {
     if (title === undefined || title == "") {
       return;
@@ -45,12 +55,90 @@ function NewPageFactoryComponents() {
     setTitleSaved(true);
   }
 
-  // TODO
-  function reorderComponents() {
-    // Implement a way to reorder components
+  function convertToComponentRegistry(): ComponentRegistry[] {
+    return components.map((component) => {
+      if (component.type == "TextEditor") {
+        return {
+          type: "Text",
+          props: {
+            text: component.props.text,
+          },
+        };
+      } else if (component.type == "ImageEditor") {
+        return {
+          type: "Image",
+          props: {
+            src: component.props.src,
+            alt: component.props.alt,
+          },
+        };
+      } else {
+        return {
+          type: "Product",
+          props: {
+            title: "Donald Duck",
+            src: "/donald_duck.jpg",
+            description: "12,000 sold",
+            productUrl:
+              "https://www.tiktok.com/view/product/1729414184343667837?checksum=04560ef5ccc8ebad56ae17af9dc91355f9df2d7b0f8f405681a2d30a4084871d&sec_user_id=MS4wLjABAAAAvUuIrkazMyfod1E6pr9dmXlNr7Aq4B1Ud7rdi4rKGiZsbKdK-yxONPvqnDdhmBeG&share_app_id=1180&share_link_id=95FDFF8B-5EC3-476E-8757-4D1FC1C77C42&social_share_type=15&timestamp=1694263941&trackParams=%7B%22source_page_type%22%3A%22product_share%22%2C%22enter_from_info%22%3A%22product_share_outside%22%2C%22traffic_source_list%22%3A%5B%5D%7D&tt_from=copy&u_code=DG9F1MBMBKI%3A04&ug_btm=b6880%2Cb6661&unique_id=r1ckkoh&user_id=6912306946356659206&utm_campaign=client_share&utm_medium=ios&utm_source=copy",
+            rating: 5,
+          },
+        };
+      }
+    });
   }
 
+  function handlePreview() {
+    setComponentRegistry(convertToComponentRegistry());
+
+    if (blogRef.current) {
+      blogRef.current.open();
+    }
+  }
+
+  const handleUpload = async () => {
+    if (title === undefined || title == "") {
+      return;
+    }
+    if (!componentRegistry || componentRegistry.length == 0) {
+      return;
+    }
+    const { data: reelData, error: reelError } = await supabase
+      .from("reels")
+      .insert({
+        caption: "Check out the new blog feature",
+        user_id: "50801985-8941-4763-b362-5c0190769f67",
+        video_id: "loading.mp4",
+      })
+      .select();
+
+    if (reelError) {
+      console.log(reelError);
+    }
+
+    const reel_id = reelData![0].id;
+
+    const { data: blogData, error } = await supabase
+      .from("blogs")
+      .insert({
+        title: title,
+        component_registry: JSON.parse(
+          JSON.stringify(convertToComponentRegistry())
+        ),
+        user_id: "50801985-8941-4763-b362-5c0190769f67",
+        reel_id: reel_id,
+      })
+      .select();
+
+    if (error) {
+      console.log(error);
+    }
+
+    console.log(blogData);
+  };
+
   useEffect(() => {
+    // Load registry components
     loadTextComponent();
     loadTextEditorComponent();
     loadProductEditorComponent();
@@ -59,28 +147,14 @@ function NewPageFactoryComponents() {
 
   return (
     <main className="w-full h-[100dvh] flex flex-col">
-      <Head>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="TikBlog" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
-        />
-      </Head>
       <section
         id="nav"
         className="flex flex-row w-full h-12 px-2 bg-white justify-between items-center"
       >
         <Link href="/add-reel">Close</Link>
         <div className="flex flex-row gap-4">
-          <button
-            onClick={() => {
-              console.log(JSON.stringify(components));
-            }}
-          >
-            Save
-          </button>
-          <button onClick={() => router.push("/")}>Done</button>
+          <button onClick={handlePreview}>Preview</button>
+          <button onClick={handleUpload}>Done</button>
         </div>
       </section>
       <section className="flex flex-col px-2 py-2 justify-center gap-2"></section>
@@ -194,6 +268,7 @@ function NewPageFactoryComponents() {
             </div>
           )}
       </section>
+      <Blog ref={blogRef} title={title} componentRegistry={componentRegistry} />
     </main>
   );
 }

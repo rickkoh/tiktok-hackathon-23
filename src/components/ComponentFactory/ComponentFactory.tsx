@@ -64,6 +64,7 @@ export function registerComponent<T>(key: string, component: ComponentType<T>) {
 export const FactoryComponentContext = createContext<{
   components: FactoryComponentProps[];
   addComponent: (component: ComponentRegistry) => void;
+  loadComponents: (component: ComponentRegistry[]) => void;
   addAllComponents: (component: ComponentRegistry[]) => void;
   updateComponent: (
     i: number,
@@ -74,9 +75,10 @@ export const FactoryComponentContext = createContext<{
 }>({
   components: [],
   addComponent: () => {},
-  updateComponentType: () => {},
+  loadComponents: () => {},
   addAllComponents: () => {},
   updateComponent: () => {},
+  updateComponentType: () => {},
   deleteComponent: () => {},
 });
 
@@ -88,6 +90,10 @@ export function FactoryComponentProvider({ children }: { children?: any }) {
   // Add a component to the registry
   function addComponent(component: ComponentRegistry) {
     dispatch({ type: "add", payload: { ...component } });
+  }
+
+  function loadComponents(components: ComponentRegistry[]) {
+    dispatch({ type: "loadAll", payload: components });
   }
 
   function addAllComponents(components: ComponentRegistry[]) {
@@ -115,6 +121,7 @@ export function FactoryComponentProvider({ children }: { children?: any }) {
   // Create the context provider value
   const providerValue = {
     components,
+    loadComponents,
     addComponent,
     updateComponentType,
     addAllComponents,
@@ -164,6 +171,14 @@ function componentReducer(
   switch (action.type) {
     case "add":
       return [...components, { ...action.payload }];
+    case "loadAll":
+      return [
+        ...action.payload.map((e: FactoryComponentProps) => ({
+          id: e.id,
+          type: e.type,
+          props: e.props,
+        })),
+      ];
     case "addAll":
       return [
         ...components,

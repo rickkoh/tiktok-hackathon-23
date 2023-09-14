@@ -4,7 +4,7 @@ import {
   FactoryComponentContext,
   registerComponent,
   useRegistryState,
-} from "../ComponentFactory.tsx/ComponentFactory";
+} from "../ComponentFactory/ComponentFactory";
 import ProductComponent from "./ProductComponentRegistry";
 
 interface Props {

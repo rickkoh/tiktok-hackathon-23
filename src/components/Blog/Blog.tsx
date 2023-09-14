@@ -5,7 +5,6 @@ import {
   useContext,
   useEffect,
   useImperativeHandle,
-  useReducer,
   useRef,
   useState,
 } from "react";
@@ -13,7 +12,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import { loadTextComponent } from "./TextComponentRegistry";
 import { loadProductComponent } from "./ProductComponentRegistry";
 import { loadTitleComponent } from "./TitleComponentRegistry";
-import Image from "next/image";
 import { loadImageComponent } from "./ImageComponentRegistry";
 import { BsShare, BsChat, BsBookmark, BsHeart } from "react-icons/bs";
 import {
@@ -21,18 +19,12 @@ import {
   FactoryComponentContext,
   FactoryComponents,
   FactoryComponentProvider,
-} from "../ComponentFactory.tsx/ComponentFactory";
+} from "../ComponentFactory/ComponentFactory";
+import BlogProfile from "../Profile/BlogProfile";
 
 // Backend to retrieve the data here
 
-/**
- * Blog has two state,
- * 1. Blog in modal view when the widget is clicked
- * 2. Able to xxpand fully when the widget is dragged up
- */
-
 // database
-
 // fake data here for now
 // make changes to the fake data to see how componentregistry works
 // data here will eventually be fetched from live database
@@ -123,7 +115,10 @@ const fakeComponents: ComponentRegistry[] = [
   },
 ];
 
-interface Props {}
+interface Props {
+  title?: string;
+  componentRegistry?: ComponentRegistry[];
+}
 
 export interface BlogRef {
   open: () => void;
@@ -214,28 +209,21 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
           </div>
         </section>
         <section className="p-6 pt-0 py-3 flex flex-col gap-3">
-          <h1 className="text-2xl font-bold">Top 3 Rubber Duckies</h1>
-          <div className="flex flex-row gap-3 items-center">
-            <Image
-              src="/dp.jpeg"
-              width={64}
-              height={64}
-              alt=""
-              className="w-12 h-12 rounded-full aspect-square"
-            />
-            <div className="flex flex-col leading-none">
-              <div>Cap&apos;n Crunch</div>
-              <div className="text-gray-400">5 min read</div>
-            </div>
-            <div className="flex flex-col leading-none ml-2">
-              <button className="text-red-400 text-start hover:text-red-500">
-                Follow
-              </button>
-              <div className="text-gray-400">Sep 5, 2023</div>
-            </div>
-          </div>
+          <h1 className="text-2xl font-bold">
+            {props.title ?? "Top 3 Rubber Duckies"}
+          </h1>
+          <BlogProfile
+            minRead={
+              props.componentRegistry
+                ? Math.round(props.componentRegistry.length / 3)
+                : 5
+            }
+            date={new Date()}
+          />
           <FactoryComponentProvider>
-            <BlogFactoryComponents />
+            <BlogFactoryComponents
+              componentRegistry={props.componentRegistry}
+            />
           </FactoryComponentProvider>
           <section id="comment-section" className="flex flex-col gap-4">
             {
@@ -255,16 +243,22 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
   );
 }
 
-function BlogFactoryComponents() {
-  const { addAllComponents } = useContext(FactoryComponentContext);
+function BlogFactoryComponents(props: Props) {
+  const { loadComponents } = useContext(FactoryComponentContext);
 
   useEffect(() => {
     loadTextComponent();
     loadTitleComponent();
     loadProductComponent();
     loadImageComponent();
-    addAllComponents(fakeComponents);
   }, []);
+
+  useEffect(() => {
+    props.componentRegistry
+      ? loadComponents(props.componentRegistry)
+      : loadComponents(fakeComponents);
+  }, [props.componentRegistry]);
+
   return <FactoryComponents />;
 }
 

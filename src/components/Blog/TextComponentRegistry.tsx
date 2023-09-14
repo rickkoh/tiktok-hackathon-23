@@ -1,5 +1,5 @@
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { registerComponent } from "../ComponentFactory.tsx/ComponentFactory";
+import { registerComponent } from "../ComponentFactory/ComponentFactory";
 
 interface Props {
   text: string;
