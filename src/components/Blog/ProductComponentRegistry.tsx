@@ -16,7 +16,7 @@ export default function ProductComponent(props: Props) {
   return (
     <Link
       className="w-full h-fit px-3 py-2 items-center rounded-lg flex flex-row bg-gray-100 gap-4 my-1"
-      href={props.productUrl ?? ""}
+      href={"/product"}
     >
       <div className="flex flex-col gap-4 w-full h-fit">
         <div className="flex flex-row gap-4 w-full h-fit">
