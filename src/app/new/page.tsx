@@ -112,10 +112,6 @@ function NewPageFactoryComponents() {
       })
       .select();
 
-    if (reelError) {
-      console.log(reelError);
-    }
-
     const reel_id = reelData![0].id;
 
     const { data: blogData, error } = await supabase
@@ -130,11 +126,7 @@ function NewPageFactoryComponents() {
       })
       .select();
 
-    if (error) {
-      console.log(error);
-    }
-
-    console.log(blogData);
+    router.push("/");
   };
 
   useEffect(() => {
