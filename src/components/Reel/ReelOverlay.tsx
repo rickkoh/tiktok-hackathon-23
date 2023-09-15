@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import Blog, { BlogRef } from "../Blog/Blog";
 import { ReelType, Tables } from "@/types";
+import Reel from "./Reel";
 
 export interface ReelOverlayProps {
   reel: ReelType;
@@ -59,7 +60,7 @@ function ReelOverlay(props: ReelOverlayProps) {
           />
         </aside>
       </div>
-      <Blog ref={blogRef} />
+      <Blog reel_id={props.reel.id} ref={blogRef} />
     </>
   );
 }

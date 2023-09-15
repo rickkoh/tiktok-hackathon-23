@@ -1,7 +1,9 @@
+import { Tables } from "@/types";
 import { format } from "date-fns";
 import Image from "next/image";
 
 interface Props {
+  user?: Tables<"user_profiles">;
   minRead?: number;
   date?: Date;
 }
@@ -17,7 +19,7 @@ export default function BlogProfile(props: Props) {
         className="w-12 h-12 rounded-full aspect-square"
       />
       <div className="flex flex-col leading-none">
-        <div>Cap&apos;n Crunch</div>
+        <div>{props.user?.name ?? `Cap&apos;n Crunch`}</div>
         <div className="text-gray-400">{props.minRead ?? "5"} min read</div>
       </div>
       <div className="flex flex-col leading-none ml-2">
