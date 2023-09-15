@@ -40,16 +40,22 @@ export default function Page() {
       </nav>
       <div className="flex flex-col w-full h-full overflow-scroll bg-white p-3 gap-4">
         <h1 className="font-semibold">Customer reviews (4)</h1>
+        <div className="flex flex-row items-center gap-2">
+          <h2>
+            <b className="font-semibold">4.8</b>/5
+          </h2>
+          <Stars rating={5} width={18} height={18} />
+        </div>
         <div className="flex flex-col gap-1 mb-6">
           <div className="flex flex-row items-center gap-2">
             <Image
-              src="/public_profile.png"
+              src="/dp.jpeg"
               height={24}
               width={24}
               alt=""
               className="rounded-full aspect-square"
             />
-            <h1>User{Math.random().toString().slice(-8)}</h1>
+            <h1>Cap&apos;n Crunch</h1>
           </div>
           <Stars rating={5} />
           <p className="text-gray-500">Item: default</p>
@@ -88,15 +94,7 @@ export default function Page() {
           </p>
           <div className="flex flex-row gap-2">
             <Image
-              src="/public_profile.png"
-              height={84}
-              width={84}
-              alt=""
-              objectFit="cover"
-              className="aspect-square"
-            />
-            <Image
-              src="/public_profile.png"
+              src="/product_placeholder.png"
               height={84}
               width={84}
               alt=""
@@ -124,7 +122,7 @@ export default function Page() {
           </p>
           <div className="flex flex-row gap-2">
             <Image
-              src="/public_profile.png"
+              src="/product_placeholder.png"
               height={84}
               width={84}
               alt=""
@@ -132,7 +130,7 @@ export default function Page() {
               className="aspect-square"
             />
             <Image
-              src="/public_profile.png"
+              src="/product_placeholder.png"
               height={84}
               width={84}
               alt=""
@@ -160,15 +158,7 @@ export default function Page() {
           </p>
           <div className="flex flex-row gap-2">
             <Image
-              src="/public_profile.png"
-              height={84}
-              width={84}
-              alt=""
-              objectFit="cover"
-              className="aspect-square"
-            />
-            <Image
-              src="/public_profile.png"
+              src="/product_placeholder.png"
               height={84}
               width={84}
               alt=""

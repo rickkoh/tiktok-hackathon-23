@@ -1,6 +1,5 @@
 // blogs
-
-import { ComponentRegistry } from "@/types";
+import { ComponentRegistry } from "@/components/ComponentFactory/ComponentFactory";
 import { markDownToAst } from "./helper";
 
 interface BlogDataType {
@@ -270,7 +269,7 @@ const blogData2: BlogDataType = {
   component_registry: [
     {
       type: "Text",
-      package: {
+      props: {
         ast: {
           type: "root",
           children: [

@@ -6,6 +6,7 @@ import {
   useRegistryState,
 } from "../ComponentFactory/ComponentFactory";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import ReactTextareaAutosize from "react-textarea-autosize";
 
 interface Props {
   id?: number;
@@ -40,7 +41,7 @@ export default function TextEditor(props: Props) {
               <circle cx="25.5" cy="3.5" r="3.5" fill="#D9D9D9" />
             </svg>
           </div>
-          <textarea
+          <ReactTextareaAutosize
             value={text}
             placeholder={props.placeholder}
             onChange={(e) => setText(e.target.value)}
