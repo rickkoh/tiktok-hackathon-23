@@ -62,7 +62,7 @@ export default function Home() {
       <TopNavbar />
       <div ref={scrollRef}>
         {reels.map((reel, i) => (
-          <Reel key={i} reel={reel} />
+          <Reel key={reel.id} reel={reel} />
         ))}
         {/* <Reel />
         <Reel color="bg-red-400" /> */}
