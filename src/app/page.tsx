@@ -22,7 +22,8 @@ export default function Home() {
 
     const { data, error } = await supabase
       .from("reels")
-      .select("*, blogs(*, user_profiles(*)), user_profiles(*)");
+      .select("*, blogs(*, user_profiles(*)), user_profiles(*)")
+      .order("created_at", { ascending: true });
 
     if (error) {
       console.error(error);
