@@ -55,6 +55,7 @@ function NewPageFactoryComponents() {
     setTitleSaved(true);
   }
 
+  // Converts editor components to normal components
   function convertToComponentRegistry(): ComponentRegistry[] {
     return components.map((component) => {
       if (component.type == "TextEditor") {
@@ -76,12 +77,7 @@ function NewPageFactoryComponents() {
         return {
           type: "Product",
           props: {
-            title: "Donald Duck",
-            src: "/donald_duck.jpg",
-            description: "12,000 sold",
-            productUrl:
-              "https://www.tiktok.com/view/product/1729414184343667837?checksum=04560ef5ccc8ebad56ae17af9dc91355f9df2d7b0f8f405681a2d30a4084871d&sec_user_id=MS4wLjABAAAAvUuIrkazMyfod1E6pr9dmXlNr7Aq4B1Ud7rdi4rKGiZsbKdK-yxONPvqnDdhmBeG&share_app_id=1180&share_link_id=95FDFF8B-5EC3-476E-8757-4D1FC1C77C42&social_share_type=15&timestamp=1694263941&trackParams=%7B%22source_page_type%22%3A%22product_share%22%2C%22enter_from_info%22%3A%22product_share_outside%22%2C%22traffic_source_list%22%3A%5B%5D%7D&tt_from=copy&u_code=DG9F1MBMBKI%3A04&ug_btm=b6880%2Cb6661&unique_id=r1ckkoh&user_id=6912306946356659206&utm_campaign=client_share&utm_medium=ios&utm_source=copy",
-            rating: 5,
+            product_id: "b62771c9-456c-4939-82d8-e13d95545d7d",
           },
         };
       }
