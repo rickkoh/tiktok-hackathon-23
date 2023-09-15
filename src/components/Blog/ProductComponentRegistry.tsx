@@ -3,15 +3,15 @@ import { registerComponent } from "../ComponentFactory/ComponentFactory";
 import Link from "next/link";
 import Stars from "../Product/Stars";
 import { Database, Tables } from "@/types";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface Props {
   id?: number;
   product_id?: string;
-  title: string;
-  src: string;
-  description: string;
+  title?: string;
+  src?: string;
+  description?: string;
   productUrl?: string;
   rating?: number;
 }
@@ -22,10 +22,10 @@ interface ProductDataType extends Tables<"products"> {
 
 export default function ProductComponent(props: Props) {
   const supabase = createClientComponentClient<Database>();
-  const [productData, setProductData] = useState<ProductDataType>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const getProductData = useCallback(async () => {
+  const [productData, setProductData] = useState<ProductDataType>();
+
+  const getProductData = async () => {
     if (!props.product_id) {
       return;
     }
@@ -48,16 +48,13 @@ export default function ProductComponent(props: Props) {
       .getPublicUrl(productData.image_id!).data.publicUrl;
 
     setProductData(productData);
-    setIsLoading(false);
-  }, [props, supabase]);
+  };
 
   useEffect(() => {
     getProductData();
   }, []);
 
-  return isLoading ? (
-    <></>
-  ) : (
+  return (
     <Link
       className="w-full h-fit px-3 py-2 items-center rounded-lg flex flex-row bg-gray-100 gap-4 my-1"
       href={"/product"}
@@ -65,7 +62,10 @@ export default function ProductComponent(props: Props) {
       <div className="flex flex-col gap-4 w-full h-fit">
         <div className="flex flex-row gap-4 w-full h-fit">
           <Image
-            src={productData?.avatar_url ?? props.src}
+            src={
+              (productData ? productData.avatar_url : props.src) ??
+              "/product_placeholder.png"
+            }
             width={128}
             height={128}
             className="w-24 h-24 rounded-lg aspect-square"
@@ -75,18 +75,23 @@ export default function ProductComponent(props: Props) {
           />
           <div className="flex flex-col gap-1 leading-none">
             <h1 className="font-bold text-xl">
-              {productData?.title ?? props.title}
+              {(productData ? productData.title : props.title) ??
+                "Test Product"}
             </h1>
             <p>
               <s className="text-gray-400">
-                {productData?.price?.toFixed(2) ?? "29.00"}
+                {productData ? productData.price.toFixed(2) : "29.00"}
               </s>{" "}
-              {productData?.price?.toFixed(2) ?? "$20.00"}
+              {productData ? productData.price.toFixed(2) : "$20.00"}
             </p>
             <div className="flex flex-row">
               <p className="text-xs">
-                <Stars rating={productData?.ratings ?? props.rating ?? 5} />
-                {productData?.description ?? props.description}
+                <Stars
+                  rating={
+                    (productData ? productData.ratings : props.rating) ?? 5
+                  }
+                />
+                {productData ? productData.description : props.description}
               </p>
             </div>
           </div>
