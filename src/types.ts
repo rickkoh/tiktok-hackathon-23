@@ -158,6 +158,7 @@ export interface Database {
           ratings: number | null;
           sold: number;
           title: string;
+          description: string | null;
           updated_at: string;
         };
         Insert: {
@@ -168,6 +169,7 @@ export interface Database {
           ratings?: number | null;
           sold?: number;
           title: string;
+          description: string | null;
           updated_at?: string;
         };
         Update: {
@@ -178,6 +180,7 @@ export interface Database {
           ratings?: number | null;
           sold?: number;
           title?: string;
+          description: string | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -302,6 +305,8 @@ export interface Database {
     };
   };
 }
+
+export interface ComponentRegistry {}
 
 export interface ReelType extends Tables<"reels"> {
   videoUrl?: string;

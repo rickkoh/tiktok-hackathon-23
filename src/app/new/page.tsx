@@ -12,6 +12,7 @@ import {
 } from "@/components/ComponentFactory/ComponentFactory";
 import BlogProfile from "@/components/Profile/BlogProfile";
 import { Database } from "@/types";
+import { markDownToAst } from "@/utils/helper";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -55,37 +56,50 @@ function NewPageFactoryComponents() {
     setTitleSaved(true);
   }
 
-  // Converts editor components to normal components
-  function convertToComponentRegistry(): ComponentRegistry[] {
-    return components.map((component) => {
-      if (component.type == "TextEditor") {
-        return {
-          type: "Text",
-          props: {
-            text: component.props.text,
-          },
-        };
-      } else if (component.type == "ImageEditor") {
-        return {
-          type: "Image",
-          props: {
-            src: component.props.src,
-            alt: component.props.alt,
-          },
-        };
-      } else {
-        return {
-          type: "Product",
-          props: {
-            product_id: "b62771c9-456c-4939-82d8-e13d95545d7d",
-          },
-        };
-      }
-    });
+  async function convertToComponentRegistry(): Promise<ComponentRegistry[]> {
+    const convertedComponents: ComponentRegistry[] = await Promise.all(
+      components.map(async (component) => {
+        if (component.type === "TextEditor") {
+          const ast = await markDownToAst(component.props.text);
+          return {
+            type: "Text",
+            props: {
+              ast: ast,
+            },
+          };
+        } else if (component.type === "ImageEditor") {
+          return {
+            type: "Image",
+            props: {
+              src: component.props.src,
+              alt: component.props.alt,
+            },
+          };
+        } else {
+          return {
+            type: "Product",
+            // props: {
+            //   title: "Donald Duck",
+            //   src: "/donald_duck.jpg",
+            //   description: "12,000 sold",
+            //   productUrl:
+            //     "https://www.tiktok.com/view/product/1729414184343667837?checksum=04560ef5ccc8ebad56ae17af9dc91355f9df2d7b0f8f405681a2d30a4084871d&sec_user_id=MS4wLjABAAAAvUuIrkazMyfod1E6pr9dmXlNr7Aq4B1Ud7rdi4rKGiZsbKdK-yxONPvqnDdhmBeG&share_app_id=1180&share_link_id=95FDFF8B-5EC3-476E-8757-4D1FC1C77C42&social_share_type=15&timestamp=1694263941&trackParams=%7B%22source_page_type%22%3A%22product_share%22%2C%22enter_from_info%22%3A%22product_share_outside%22%2C%22traffic_source_list%22%3A%5B%5D%7D&tt_from=copy&u_code=DG9F1MBMBKI%3A04&ug_btm=b6880%2Cb6661&unique_id=r1ckkoh&user_id=6912306946356659206&utm_campaign=client_share&utm_medium=ios&utm_source=copy",
+            //   rating: 5,
+            // },
+            props: {
+              product_id: "b62771c9-456c-4939-82d8-e13d95545d7d",
+            },
+          };
+        }
+      })
+    );
+
+    return convertedComponents;
   }
 
-  function handlePreview() {
-    setComponentRegistry(convertToComponentRegistry());
+  async function handlePreview() {
+    const component_registry = await convertToComponentRegistry();
+    setComponentRegistry(component_registry);
 
     if (blogRef.current) {
       blogRef.current.open();
@@ -93,12 +107,19 @@ function NewPageFactoryComponents() {
   }
 
   const handleUpload = async () => {
+    console.log("called");
+
     if (title === undefined || title == "") {
       return;
     }
+
     if (!componentRegistry || componentRegistry.length == 0) {
+      console.log("zero");
       return;
     }
+
+    console.log("here");
+
     const { data: reelData, error: reelError } = await supabase
       .from("reels")
       .insert({
@@ -108,15 +129,17 @@ function NewPageFactoryComponents() {
       })
       .select();
 
+    if (reelError) {
+      console.error(reelError);
+    }
     const reel_id = reelData![0].id;
-
+    const component_registry = await convertToComponentRegistry();
+    console.log("here");
     const { data: blogData, error } = await supabase
       .from("blogs")
       .insert({
         title: title,
-        component_registry: JSON.parse(
-          JSON.stringify(convertToComponentRegistry())
-        ),
+        component_registry: JSON.parse(JSON.stringify(component_registry)),
         user_id: "50801985-8941-4763-b362-5c0190769f67",
         reel_id: reel_id,
       })

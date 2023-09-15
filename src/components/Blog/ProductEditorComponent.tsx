@@ -96,11 +96,7 @@ function ProductEditor(props: Props) {
         </div>
       ) : (
         <div className="flex flex-row gap-2 justify-between items-center">
-          <ProductComponent
-            title="Title"
-            src="/donald_duck.jpg"
-            description="Proin vehicula dui at odio commodo uix phoinex."
-          />
+          <ProductComponent />
           <button
             onClick={() => {
               setEditing(true);

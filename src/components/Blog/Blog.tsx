@@ -2,9 +2,11 @@
 import {
   Ref,
   forwardRef,
+  useCallback,
   useContext,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -20,6 +22,8 @@ import {
   FactoryComponents,
   FactoryComponentProvider,
 } from "../ComponentFactory/ComponentFactory";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database, Tables } from "@/types";
 import BlogProfile from "../Profile/BlogProfile";
 
 // Backend to retrieve the data here
@@ -115,7 +119,13 @@ const fakeComponents: ComponentRegistry[] = [
   },
 ];
 
-interface Props {
+interface BlogDataType extends Omit<Tables<"blogs">, "component_registry"> {
+  component_registry: ComponentRegistry[];
+  user_profile: Tables<"user_profiles">;
+}
+
+interface BlogProps {
+  reel_id?: string;
   title?: string;
   componentRegistry?: ComponentRegistry[];
 }
@@ -124,7 +134,9 @@ export interface BlogRef {
   open: () => void;
 }
 
-function Blog(props: Props, ref: Ref<BlogRef>) {
+function Blog(props: BlogProps, ref: Ref<BlogRef>) {
+  const supabase = createClientComponentClient<Database>();
+
   const [showModal, setShowModal] = useState(false);
 
   const [fullscreenModal, setFullscreenModal] = useState(false);
@@ -158,7 +170,60 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
     },
   }));
 
-  return (
+  // Blog data state
+  const [blogData, setBlogData] = useState<BlogDataType>();
+
+  const getBlogData = async () => {
+    if (props.reel_id == null) {
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("blogs")
+      .select("*, user_profiles(*)")
+      .eq("reel_id", props.reel_id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    // get blog registry
+    const componentRegistry = data[0]
+      .component_registry as unknown[] as ComponentRegistry[];
+
+    const blogData: BlogDataType = {
+      component_registry: componentRegistry,
+      id: data[0].id,
+      title: data[0].title,
+      created_at: data[0].created_at,
+      updated_at: data[0].updated_at,
+      user_id: data[0].user_id,
+      user_profile: data[0].user_profiles as unknown as Tables<"user_profiles">, // supabase has a current bug
+    };
+
+    setBlogData(blogData);
+  };
+
+  // Get blog data
+  useEffect(() => {
+    getBlogData();
+  }, []);
+
+  // Get component registry from either blogData, props, or fakeComponents
+  const componentRegistry = useMemo(() => {
+    if (blogData !== undefined) {
+      return blogData?.component_registry;
+    } else if (props.componentRegistry !== undefined) {
+      return props.componentRegistry;
+    } else {
+      return fakeComponents;
+    }
+  }, [blogData, props.componentRegistry]);
+
+  return componentRegistry == undefined ? (
+    <></>
+  ) : (
     <>
       {showModal && (
         <>
@@ -210,25 +275,21 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
         </section>
         <section className="p-6 pt-0 py-3 flex flex-col gap-3">
           <h1 className="text-2xl font-bold">
-            {props.title ?? "Top 3 Rubber Duckies"}
+            {blogData?.title ?? props.title ?? "Top 3 Rubber Duckies"}
           </h1>
           <BlogProfile
+            user={blogData?.user_profile as unknown as Tables<"user_profiles">}
             minRead={
               props.componentRegistry
                 ? Math.round(props.componentRegistry.length / 3)
                 : 5
             }
-            date={new Date()}
+            date={new Date(blogData?.created_at ?? Date.now())}
           />
           <FactoryComponentProvider>
-            <BlogFactoryComponents
-              componentRegistry={props.componentRegistry}
-            />
+            <BlogFactoryComponents components={componentRegistry} />
           </FactoryComponentProvider>
           <section id="comment-section" className="flex flex-col gap-4">
-            {
-              // Eventually will need to retrieve data from database
-            }
             <h1 className="text-2xl font-bold my-1 mt-4">Comments</h1>
             <p>Comment 1</p>
             <p>Comment 2</p>
@@ -243,7 +304,11 @@ function Blog(props: Props, ref: Ref<BlogRef>) {
   );
 }
 
-function BlogFactoryComponents(props: Props) {
+interface BlogFactoryComponentsProps {
+  components: ComponentRegistry[];
+}
+
+function BlogFactoryComponents(props: BlogFactoryComponentsProps) {
   const { loadComponents } = useContext(FactoryComponentContext);
 
   useEffect(() => {
@@ -254,10 +319,8 @@ function BlogFactoryComponents(props: Props) {
   }, []);
 
   useEffect(() => {
-    props.componentRegistry
-      ? loadComponents(props.componentRegistry)
-      : loadComponents(fakeComponents);
-  }, [props.componentRegistry]);
+    loadComponents(props.components);
+  }, [props.components]);
 
   return <FactoryComponents />;
 }

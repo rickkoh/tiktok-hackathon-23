@@ -140,6 +140,7 @@ export function FactoryComponentProvider({ children }: { children?: any }) {
 export function FactoryComponent<T extends FactoryComponentProps>(
   component: T
 ): JSX.Element {
+  // console.log(component);
   component.props.id = component.id;
   return createElement(
     getComponent(component.type),
@@ -151,7 +152,7 @@ export function FactoryComponent<T extends FactoryComponentProps>(
 // Render all factory components from the context
 export function FactoryComponents() {
   const { components: componentsReducer } = useContext(FactoryComponentContext);
-
+  console.log(componentsReducer);
   return (
     <>
       {componentsReducer.map((props, i) => {
