@@ -9,7 +9,7 @@ export interface ReelProps {
 
 function Reel(props: ReelProps) {
   return (
-    <div className={"flex h-screen w-full relative bg-black"}>
+    <div className={"flex h-screen w-full relative bg-black snap-start"}>
       <div className="absolute top-0 left-0 w-full h-full" />
       <video
         loop

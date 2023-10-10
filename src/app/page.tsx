@@ -5,12 +5,9 @@ import Reel from "@/components/Reel/Reel";
 import { Database, ReelType, Tables } from "@/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Head from "next/head";
-import { useCallback, useEffect, useRef, useState } from "react";
-import useScrollSnap from "react-use-scroll-snap";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Home() {
-  const scrollRef = useRef(null);
-  useScrollSnap({ ref: scrollRef, duration: 5 });
   const supabase = createClientComponentClient<Database>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,12 +57,10 @@ export default function Home() {
       </Head>
       {/* Header */}
       <TopNavbar />
-      <div ref={scrollRef}>
+      <div className="flex flex-col h-screen overflow-scroll snap-y snap-mandatory">
         {reels.map((reel, i) => (
           <Reel key={reel.id} reel={reel} />
         ))}
-        {/* <Reel />
-        <Reel color="bg-red-400" /> */}
       </div>
       <div className="h-[72px]"></div>
       <BottomNavbar />
