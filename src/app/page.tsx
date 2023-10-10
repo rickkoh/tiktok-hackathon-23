@@ -57,7 +57,7 @@ export default function Home() {
       </Head>
       {/* Header */}
       <TopNavbar />
-      <div className="flex flex-col h-screen overflow-scroll snap-y snap-mandatory">
+      <div className="flex flex-col h-[100dvh] overflow-scroll snap-y snap-mandatory">
         {reels.map((reel, i) => (
           <Reel key={reel.id} reel={reel} />
         ))}

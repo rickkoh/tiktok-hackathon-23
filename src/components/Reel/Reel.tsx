@@ -9,14 +9,13 @@ export interface ReelProps {
 
 function Reel(props: ReelProps) {
   return (
-    <div className={"flex h-screen w-full relative bg-black snap-start"}>
-      <div className="absolute top-0 left-0 w-full h-full" />
+    <div className={"flex h-[100dvh] w-full relative bg-black snap-center"}>
       <video
         loop
         autoPlay
         muted
         playsInline
-        className="h-full"
+        className="w-full h-full object-contain"
         placeholder={LoadingPlaceholder}
       >
         <source src={props.reel.videoUrl} type="video/mp4" />
