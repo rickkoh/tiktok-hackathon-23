@@ -15,7 +15,7 @@ function Reel(props: ReelProps) {
         autoPlay
         muted
         playsInline
-        className="w-full h-full object-contain"
+        className="w-full h-full"
         placeholder={LoadingPlaceholder}
       >
         <source src={props.reel.videoUrl} type="video/mp4" />
